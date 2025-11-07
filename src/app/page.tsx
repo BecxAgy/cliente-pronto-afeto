@@ -1,0 +1,1 @@
+export {HomeContainter as default} from '../subdomains/home/containers/home.container'
