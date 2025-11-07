@@ -3,6 +3,13 @@ export interface Login {
   password?: string;
 }
 
+export interface SignUp {
+  fullname?: string[];
+  email?: string[];
+  password?: string[];
+  confirmPassword?: string[];
+}
+
 export interface State<T> {
   errors: {
     [K in keyof T]?: string[];

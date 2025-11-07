@@ -1,7 +1,7 @@
 'use server';
 import { insertUserToCookies } from './helpers';
-import { loginSchema } from './schemas';
-import { Login, State, Client } from './types';
+import { loginSchema, signupSchema } from './schemas';
+import { Login, State, Client, SignUp } from './types';
 import jwt from 'jsonwebtoken';
 
 export async function fetchClient(
@@ -129,4 +129,71 @@ export async function loginWithGoogle(
     message: 'Login efetuado com sucesso',
     error: false,
   };
+}
+
+export async function signUp(
+  previousState: State<SignUp>,
+  formData: FormData
+): Promise<State<SignUp>> {
+  const fullname = formData.get('fullname') as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const confirmPassword = formData.get('confirmPassword') as string;
+
+  const validatedFields = signupSchema.safeParse({
+    fullname: fullname,
+    email: email,
+    password: password,
+    confirmPassword: confirmPassword,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Há campos a serem preenchidos corretamente.',
+      error: true,
+    };
+  }
+
+  // Preparar dados para enviar à API
+  const signupData = {
+    email: validatedFields.data.email,
+    userName: validatedFields.data.fullname,
+    password: validatedFields.data.password,
+    roles: ['ROLE_USER'],
+  };
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}api/v1/signup`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signupData),
+      }
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        errors: {},
+        message: data.message || 'Erro ao criar conta. Tente novamente.',
+        error: true,
+      };
+    }
+
+    return {
+      errors: {},
+      message: 'Conta criada com sucesso!',
+      error: false,
+    };
+  } catch (error) {
+    return {
+      errors: {},
+      message: 'Erro interno do servidor. Tente novamente mais tarde.',
+      error: true,
+    };
+  }
 }

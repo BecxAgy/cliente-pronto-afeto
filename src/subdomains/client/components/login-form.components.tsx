@@ -12,9 +12,12 @@ import { Input } from '@/src/shared/modules/components/ui/input';
 import { cn } from '@/src/shared/modules/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { login } from '../actions';
 import { Login, State } from '../types';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { ErrorMessage } from '@/src/shared/modules/components/ui/error-message';
 
 export const LoginFormComponent = ({
   className,
@@ -22,6 +25,17 @@ export const LoginFormComponent = ({
 }: React.HTMLProps<HTMLDivElement>) => {
   const initialState: State<Login> = { errors: {}, message: '', error: false };
   const [state, formAction] = useActionState(login, initialState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state) {
+      if (!state.error && state.message === 'Login efetuado com sucesso') {
+        router.push('/home');
+      } else if (state.message) {
+        toast.error(state.message);
+      }
+    }
+  }, [state.error, state.message, state, router]);
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -38,17 +52,22 @@ export const LoginFormComponent = ({
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
-                  id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
                 />
+                <ErrorMessage name="email" errors={state.errors?.email || []} />
               </Field>
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Senha</FieldLabel>
                 </div>
-                <Input id="password" type="password" required />
+                <Input name="password" type="password" required />
+                <ErrorMessage
+                  name="password"
+                  errors={state.errors?.password || []}
+                />
               </Field>
               <Field>
                 <Button type="submit">Entrar</Button>
@@ -71,7 +90,7 @@ export const LoginFormComponent = ({
               </Link>
 
               <FieldDescription className="text-center">
-                Não tem uma conta? <Link href="/signup">Cadastre-se</Link>
+                Não tem uma conta? <Link href="/auth/signup">Cadastre-se</Link>
               </FieldDescription>
             </FieldGroup>
           </form>

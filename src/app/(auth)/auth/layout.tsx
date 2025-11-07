@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '../../../assets/styles/globals.css';
 import { Urbanist } from 'next/font/google';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'Pronto Afeto',
@@ -20,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={montserrat.className}>{children}</body>
+      <body className={montserrat.className}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
