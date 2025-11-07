@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginFormComponent } from '../components/login-form.components';
+import { LoginFormComponent } from '../../components/login-form.components';
 
 export const LoginInterface = () => {
   return (

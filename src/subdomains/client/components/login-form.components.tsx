@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@/src/shared/modules/components/ui/button';
 import { Card, CardContent } from '@/src/shared/modules/components/ui/card';
 import {
@@ -11,16 +12,22 @@ import { Input } from '@/src/shared/modules/components/ui/input';
 import { cn } from '@/src/shared/modules/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useActionState } from 'react';
+import { login } from '../actions';
+import { Login, State } from '../types';
 
 export const LoginFormComponent = ({
   className,
   ...props
 }: React.HTMLProps<HTMLDivElement>) => {
+  const initialState: State<Login> = { errors: {}, message: '', error: false };
+  const [state, formAction] = useActionState(login, initialState);
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card className="overflow-hidden p-0 shadow-none">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" action={formAction}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
@@ -49,19 +56,22 @@ export const LoginFormComponent = ({
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Ou continue com
               </FieldSeparator>
-              <Field className="grid grid-cols-1 gap-4">
-                <Button variant="outline" type="button">
-                  <Image
-                    src={'/icons/google.svg'}
-                    width={28}
-                    height={28}
-                    alt="Icone da empresa google"
-                  />
-                  <span className="sr-only">Login with Google</span>
-                </Button>
-              </Field>
+              <Link href={`${process.env.NEXT_PUBLIC_API_URL}auth/google`}>
+                <Field className="grid grid-cols-1 gap-4">
+                  <Button variant="outline" type="button">
+                    <Image
+                      src={'/icons/google.svg'}
+                      width={28}
+                      height={28}
+                      alt="Icone da empresa google"
+                    />
+                    <span className="sr-only">Login with Google</span>
+                  </Button>
+                </Field>
+              </Link>
+
               <FieldDescription className="text-center">
-                Não tem uma conta? <a href="#">Cadastre-se</a>
+                Não tem uma conta? <Link href="/signup">Cadastre-se</Link>
               </FieldDescription>
             </FieldGroup>
           </form>
