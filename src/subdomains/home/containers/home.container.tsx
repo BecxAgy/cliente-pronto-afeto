@@ -1,7 +1,5 @@
-import React from 'react'
+import { HomeInterface } from '../interfaces/home.interface';
 
-export const HomeContainter = () => {
-  return (
-    <div>HomeContainter</div>
-  )
-}
+export const HomeContainer = async () => {
+  return <HomeInterface />;
+};

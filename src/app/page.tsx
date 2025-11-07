@@ -1,1 +1,1 @@
-export {HomeContainter as default} from '../subdomains/home/containers/home.container'
+export { HomeContainer as default } from '../subdomains/home/containers/home.container';

@@ -1,5 +1,5 @@
-import { HomeContainter } from "./containers/home.container" 
+import { HomeContainer } from './containers/home.container';
 
 export const routes = {
-    HOME : HomeContainter
-}
+  HOME: HomeContainer,
+};

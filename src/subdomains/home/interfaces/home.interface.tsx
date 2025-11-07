@@ -1,7 +1,10 @@
-import React from 'react'
+import { ThemeToggler } from '@/src/shared/modules/components/theme/theme-toggler';
 
 export const HomeInterface = () => {
   return (
-    <div>HomeInterface</div>
-  )
-}
+    <div>
+      HomeContainer
+      <ThemeToggler />
+    </div>
+  );
+};
