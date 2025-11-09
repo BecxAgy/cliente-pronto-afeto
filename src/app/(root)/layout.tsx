@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import '../../assets/styles/globals.css';
 import { ThemeProvider } from '../../shared/modules/components/theme/theme-provider.component';
 import { Toaster } from 'sonner';
+import { SidebarProvider } from '@/src/shared/modules/components/ui/sidebar';
+import { AppSidebar } from '@/src/shared/modules/components/navigation/app-sidebar.component';
+import NavbarComponent from '@/src/shared/modules/components/navigation/navbar.component';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,17 +18,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SidebarProvider>
+            <AppSidebar />
+            <div className="flex flex-col w-full">
+              <NavbarComponent />
+              <main className="flex-1">{children}</main>
+            </div>
+          </SidebarProvider>
+          <Toaster />
         </ThemeProvider>
-        <Toaster />
       </body>
     </html>
   );

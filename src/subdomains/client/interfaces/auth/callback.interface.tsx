@@ -36,7 +36,7 @@ export const CallbackInterface = ({
         !formState.error &&
         formState.message === 'Login efetuado com sucesso'
       ) {
-        redirect('/home');
+        redirect('/');
       } else if (formState.message) {
         redirect('auth/login');
       }

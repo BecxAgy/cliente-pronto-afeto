@@ -25,7 +25,7 @@ export function ThemeToggler() {
 
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" disabled>
+      <Button variant="ghost" size="icon" disabled>
         <Sun className="h-[1.2rem] w-[1.2rem]" />
         <span className="sr-only">Carregar tema</span>
       </Button>
@@ -45,7 +45,7 @@ export function ThemeToggler() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className="relative">
           {getIcon()}
           <span className="sr-only">Alternar tema</span>
         </Button>

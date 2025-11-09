@@ -30,7 +30,7 @@ export const LoginFormComponent = ({
   useEffect(() => {
     if (state) {
       if (!state.error && state.message === 'Login efetuado com sucesso') {
-        router.push('/home');
+        router.push('/');
       } else if (state.message) {
         toast.error(state.message);
       }
