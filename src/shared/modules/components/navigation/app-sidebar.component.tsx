@@ -2,15 +2,9 @@
 
 import * as React from 'react';
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
+  LogOut,
   PieChart,
-  Settings2,
   SquareTerminal,
   Users2,
   UserSquare2,
@@ -20,11 +14,12 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from '@/src/shared/modules/components/ui/sidebar';
 import { TeamSwitcher } from './team-switcher';
 import { NavMain } from './nav-main';
-import { NavUser } from './nav-user';
 
 const data = {
   user: {
@@ -48,15 +43,11 @@ const data = {
       items: [
         {
           title: 'Ver Todas',
-          url: '/proposta/all',
+          url: '/proposal/all',
         },
         {
-          title: 'Starred',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
+          title: 'Solicitar',
+          url: '/proposal/request',
         },
       ],
     },
@@ -95,13 +86,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavUser user={data.user} />
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} links={data.navLinks} />
       </SidebarContent>
       <SidebarFooter>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenuItem key={'logout'}>
+          <SidebarMenuButton className="hover:text-destructive">
+            <LogOut />
+            <span>Sair</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

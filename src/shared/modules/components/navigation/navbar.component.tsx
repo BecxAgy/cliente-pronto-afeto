@@ -12,31 +12,15 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { ThemeToggler } from '../theme/theme-toggler';
+import { SidebarTrigger } from '../ui/sidebar';
+import Link from 'next/link';
 
 function NavbarComponent() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 gap-4">
-        {/* Logo - Hidden on mobile when sidebar is present */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5 text-primary-foreground"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-              <line x1="9" y1="9" x2="9.01" y2="9" />
-              <line x1="15" y1="9" x2="15.01" y2="9" />
-            </svg>
-          </div>
-          <span className="text-lg font-semibold">Pronto Afeto</span>
+        <div className="flex items-center gap-2 ">
+          <SidebarTrigger />
         </div>
 
         {/* Search Bar */}
@@ -70,34 +54,14 @@ function NavbarComponent() {
           </Button>
 
           {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative rounded-full"
-              >
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src="/images/avatar-placeholder.png"
-                    alt="User"
-                  />
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Team</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/profile">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/images/profile.png" alt="User" />
+              <AvatarFallback>
+                <User className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+          </Link>
         </div>
       </div>
     </header>
