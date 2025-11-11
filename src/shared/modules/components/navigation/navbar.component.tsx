@@ -5,11 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ThemeToggler } from '../theme/theme-toggler';
 import { SidebarTrigger } from '../ui/sidebar';
 import Link from 'next/link';
-import { getUserSession } from '../../helpers/session.helper';
 
 async function NavbarComponent() {
-  const session = await getUserSession();
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 gap-4">

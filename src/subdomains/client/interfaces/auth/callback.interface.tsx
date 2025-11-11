@@ -1,8 +1,5 @@
 'use client';
-
 import { useActionState, useEffect, useRef } from 'react';
-
-import { toast } from 'sonner';
 import { redirect } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { State } from '../../types';
@@ -47,19 +44,15 @@ export const CallbackInterface = ({
     <form
       ref={formRef}
       action={formAction}
-      className="flex flex-col items-center gap-5"
+      className="flex flex-col items-center gap-5 bg-none justify-center h-full"
     >
       <input type="hidden" name="token" value={token} />
-      <Button
-        className=" flex items-center justify-center h-screen w-full"
-        type="submit"
-      >
-        <Loader2
-          className="animate-spin text-purple-primary text-8xl"
-          width={100}
-          height={100}
-        />
-      </Button>
+      <Loader2
+        className="animate-spin text-primary text-8xl"
+        width={30}
+        height={30}
+      />
+      <Button className="hidden" type="submit"></Button>
     </form>
   );
 };
