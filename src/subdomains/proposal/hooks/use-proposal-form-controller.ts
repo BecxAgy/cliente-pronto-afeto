@@ -47,6 +47,9 @@ export function useProposalFormController({
       return false;
     }
 
+    // Marca o passo atual como completo após validação bem-sucedida
+    formSteps.markCurrentStepAsCompleted();
+
     if (formSteps.isLastStep) {
       // Se for a última etapa, submete o formulário
       return false; // O submit será tratado pelo onSubmit do form
@@ -144,6 +147,7 @@ export function useProposalFormController({
 
     // Utilitários
     isStepVisited: formSteps.isStepVisited,
+    isStepCompleted: formSteps.isStepCompleted,
     validateCurrentStep: validation.validateCurrentStep,
     clearError: submission.clearError,
     resetForm: () => {

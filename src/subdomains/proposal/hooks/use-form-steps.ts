@@ -32,6 +32,9 @@ export function useFormSteps(options: UseFormStepsOptions = {}) {
   const [visitedSteps, setVisitedSteps] = useState<Set<FormStep>>(
     new Set([initialStep])
   );
+  const [completedSteps, setCompletedSteps] = useState<Set<FormStep>>(
+    new Set()
+  );
 
   const currentStepIndex = FORM_STEPS.indexOf(currentStep);
   const isFirstStep = currentStepIndex === 0;
@@ -80,8 +83,26 @@ export function useFormSteps(options: UseFormStepsOptions = {}) {
   const resetSteps = useCallback(() => {
     setCurrentStep(initialStep);
     setVisitedSteps(new Set([initialStep]));
+    setCompletedSteps(new Set());
     onStepChange?.(initialStep);
   }, [initialStep, onStepChange]);
+
+  /**
+   * Marca a etapa atual como completa (validada)
+   */
+  const markCurrentStepAsCompleted = useCallback(() => {
+    setCompletedSteps(prev => new Set(prev).add(currentStep));
+  }, [currentStep]);
+
+  /**
+   * Verifica se uma etapa foi completada (validada)
+   */
+  const isStepCompleted = useCallback(
+    (step: FormStep) => {
+      return completedSteps.has(step);
+    },
+    [completedSteps]
+  );
 
   /**
    * Verifica se uma etapa já foi visitada
@@ -119,6 +140,8 @@ export function useFormSteps(options: UseFormStepsOptions = {}) {
 
     // Utilitários
     isStepVisited,
+    isStepCompleted,
+    markCurrentStepAsCompleted,
     steps: FORM_STEPS,
   };
 }

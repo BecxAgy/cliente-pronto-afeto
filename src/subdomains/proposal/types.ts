@@ -1,0 +1,22 @@
+import { ProposalFormTypeEnum } from './schemas';
+
+export interface StepProgressComponentProps {
+  readonly currentStep: ProposalFormTypeEnum;
+  readonly completedSteps?: Set<ProposalFormTypeEnum>;
+  readonly onStepClick?: (step: ProposalFormTypeEnum) => void;
+}
+
+export interface Step {
+  id: ProposalFormTypeEnum;
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+export interface StepItemProps {
+  readonly step: Step;
+  readonly completedSteps: Set<ProposalFormTypeEnum>;
+  readonly currentStep: ProposalFormTypeEnum;
+  readonly isLastStep: boolean;
+  readonly onStepClick?: (step: ProposalFormTypeEnum) => void;
+}
