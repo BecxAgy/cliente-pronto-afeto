@@ -29,7 +29,7 @@ export default function RootLayout({
             <AppSidebar />
             <div className="flex flex-col w-full">
               <NavbarComponent />
-              <main className="flex-1 px-6 py-4">{children}</main>
+              <main className="flex-1 px-6 py-4 ">{children}</main>
             </div>
           </SidebarProvider>
           <Toaster />
