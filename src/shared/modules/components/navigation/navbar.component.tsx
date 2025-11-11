@@ -1,21 +1,15 @@
-import React from 'react';
 import { Search, Calendar, Mail, User } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
 import { ThemeToggler } from '../theme/theme-toggler';
 import { SidebarTrigger } from '../ui/sidebar';
 import Link from 'next/link';
+import { getUserSession } from '../../helpers/session.helper';
 
-function NavbarComponent() {
+async function NavbarComponent() {
+  const session = await getUserSession();
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 gap-4">
