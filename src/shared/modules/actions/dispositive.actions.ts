@@ -9,7 +9,6 @@ export async function getAllDispositives(): Promise<{
   message?: string;
 }> {
   const token = await getToken();
-  console.log('🚀 ~ getAllPatologies ~ token:', token);
 
   try {
     const response = await fetch(

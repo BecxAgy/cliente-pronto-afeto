@@ -21,6 +21,8 @@ import {
 import { cn } from '@/src/shared/modules/lib/utils';
 import { useProposalFormContext } from '@/src/subdomains/proposal/contexts/proposal-form.context';
 import { type ProposalFormSchemaProps } from '@/src/subdomains/proposal/schemas';
+import { MultiSelect, type MultiSelectOption } from './multi-select';
+import { DatePicker } from './date-picker.component';
 
 // Type helper para extrair todos os possíveis paths do formulário
 type FormFieldPath = Path<ProposalFormSchemaProps>;
@@ -53,6 +55,15 @@ interface CheckboxFieldProps extends BaseFormFieldProps {
   variant: 'checkbox';
 }
 
+interface MultiSelectFieldProps extends BaseFormFieldProps {
+  variant: 'multiselect';
+  options: MultiSelectOption[];
+}
+
+interface DatePickerFieldProps extends BaseFormFieldProps {
+  variant: 'datepicker';
+}
+
 interface CustomFieldProps extends BaseFormFieldProps {
   variant: 'custom';
   render: (
@@ -65,6 +76,8 @@ type FormFieldComponentProps =
   | TextareaFieldProps
   | SelectFieldProps
   | CheckboxFieldProps
+  | MultiSelectFieldProps
+  | DatePickerFieldProps
   | CustomFieldProps;
 
 function FormFieldComponent(props: FormFieldComponentProps) {
@@ -150,6 +163,33 @@ function FormFieldComponent(props: FormFieldComponentProps) {
           </FormControl>
         );
 
+      case 'multiselect':
+        return (
+          <FormControl>
+            <MultiSelect
+              value={(field.value as number[] | undefined) ?? []}
+              onChange={field.onChange}
+              options={props.options}
+              placeholder={props.placeholder}
+              disabled={disabled}
+              className={className}
+            />
+          </FormControl>
+        );
+
+      case 'datepicker':
+        return (
+          <FormControl>
+            <DatePicker
+              value={field.value as Date | undefined}
+              onChange={field.onChange}
+              placeholder={props.placeholder}
+              disabled={disabled}
+              className={className}
+            />
+          </FormControl>
+        );
+
       case 'custom':
         return <FormControl>{props.render(field)}</FormControl>;
 
@@ -223,6 +263,19 @@ export function SelectField({
 
 export function CheckboxField(props: Readonly<BaseProps>) {
   return <FormFieldComponent variant="checkbox" {...props} />;
+}
+
+export function MultiSelectField({
+  options,
+  ...props
+}: BaseProps & { options: MultiSelectOption[] }) {
+  return (
+    <FormFieldComponent variant="multiselect" options={options} {...props} />
+  );
+}
+
+export function DatePickerField(props: Readonly<BaseProps>) {
+  return <FormFieldComponent variant="datepicker" {...props} />;
 }
 
 export function CustomField({

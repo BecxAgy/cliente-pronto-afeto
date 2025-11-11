@@ -31,13 +31,27 @@ export const careSchema = z.object({
   cpf: z
     .string({
       error: issue =>
-        issue.input === undefined ? 'CPF é obrigatório' : 'CPF deve ser um texto',
+        issue.input === undefined
+          ? 'CPF é obrigatório'
+          : 'CPF deve ser um texto',
     })
     .min(1, 'CPF é obrigatório')
     .max(14, 'CPF é muito longo'),
-  peso: z.number().min(1, 'Peso deve ser maior que zero'),
+  peso: z
+    .string({
+      error: issue =>
+        issue.input === undefined
+          ? 'Peso é obrigatório'
+          : 'Peso deve ser um número',
+    })
+    .min(1, 'Peso deve ser maior que zero'),
   dataNascimento: z
-    .date()
+    .date({
+      error: issue =>
+        issue.input === undefined
+          ? 'Data de nascimento é obrigatória'
+          : 'Data de nascimento deve ser uma data válida',
+    })
     .min(new Date('1900-01-01'), 'Data de nascimento inválida'),
 });
 export type CareFormSchemaProps = z.infer<typeof careSchema>;
@@ -64,7 +78,9 @@ export const locationFormSchema = z.object({
   cep: z
     .string({
       error: issue =>
-        issue.input === undefined ? 'CEP é obrigatório' : 'CEP deve ser um texto',
+        issue.input === undefined
+          ? 'CEP é obrigatório'
+          : 'CEP deve ser um texto',
     })
     .min(1, 'CEP é obrigatório')
     .max(10, 'CEP é inválido'),
@@ -115,7 +131,9 @@ export const locationFormSchema = z.object({
   rua: z
     .string({
       error: issue =>
-        issue.input === undefined ? 'Rua é obrigatória' : 'Rua deve ser um texto',
+        issue.input === undefined
+          ? 'Rua é obrigatória'
+          : 'Rua deve ser um texto',
     })
     .min(1, 'Rua é obrigatória')
     .max(50, 'Rua é muito longa'),
@@ -158,7 +176,9 @@ const clientFormSchema = z.object({
   cpf: z
     .string({
       error: issue =>
-        issue.input === undefined ? 'CPF é obrigatório' : 'CPF deve ser um texto',
+        issue.input === undefined
+          ? 'CPF é obrigatório'
+          : 'CPF deve ser um texto',
     })
     .nonempty('CPF é obrigatório')
     .max(14, 'CPF muito longo'),

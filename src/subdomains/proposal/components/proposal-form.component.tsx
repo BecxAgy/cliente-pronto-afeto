@@ -12,15 +12,22 @@ import { ProposalFormSchemaProps, ProposalFormTypeEnum } from '../schemas';
 import StepProgressComponent from './step-progress.component';
 import ClientFormStep from './client-form.component';
 import { ProposalFormProvider } from '../contexts/proposal-form.context';
+import HealthFormComponent from './health-form.component';
+import { DispositivesDtoGet } from '@/src/shared/modules/types/dispositives.types';
+import { PatologyDtoGet } from '@/src/shared/modules/types/patology.types';
 
 interface ProposalFormComponentProps {
   readonly onSubmitSuccess?: (data: ProposalFormSchemaProps) => void;
   readonly onSubmitError?: (error: Error) => void;
+  readonly patologies?: PatologyDtoGet;
+  readonly dispositives?: DispositivesDtoGet;
 }
 
 function ProposalFormComponent({
   onSubmitSuccess,
   onSubmitError,
+  patologies,
+  dispositives,
 }: ProposalFormComponentProps) {
   const form = useProposalForm();
 
@@ -62,24 +69,24 @@ function ProposalFormComponent({
             />
           )}
         </aside>
-
-        {/* Formulário principal */}
         <Form {...form}>
           <form className="space-y-6" onSubmit={onSubmit}>
-            {/* Mensagem de erro */}
             {error && (
               <div className="bg-destructive/10 text-destructive p-4 rounded-md border border-destructive/20">
                 <p className="text-sm font-medium">{error}</p>
               </div>
             )}
 
-            {/* Conteúdo do formulário baseado na etapa atual */}
             <section className="py-4">
               {currentStep === ProposalFormTypeEnum.Client && (
                 <ClientFormStep />
               )}
-              {currentStep === ProposalFormTypeEnum.Health &&
-                'Informe as condições de saúde e necessidades especiais'}
+              {currentStep === ProposalFormTypeEnum.Health && (
+                <HealthFormComponent
+                  patologies={patologies}
+                  dispositives={dispositives}
+                />
+              )}
               {currentStep === ProposalFormTypeEnum.Address &&
                 'Endereço onde o atendimento será realizado'}
               {currentStep === ProposalFormTypeEnum.Duty &&
@@ -88,7 +95,6 @@ function ProposalFormComponent({
                 'Escolha os profissionais para o atendimento'}
             </section>
 
-            {/* Botões de navegação */}
             <div className="flex justify-between gap-4">
               {!isFirstStep && (
                 <Button
