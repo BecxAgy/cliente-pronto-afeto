@@ -1,16 +1,9 @@
 'use client';
 
-import { type Path } from 'react-hook-form';
+import { createUseFormField } from '@/src/shared/modules/hooks/use-form-field';
 import { useProposalFormContext } from '../contexts/proposal-form.context';
-import { type ProposalFormSchemaProps } from '../schemas';
 
-export function useFormField(name: Path<ProposalFormSchemaProps>) {
-  const { form } = useProposalFormContext();
-
-  return {
-    control: form.control,
-    name,
-    fieldState: form.getFieldState(name),
-    formState: form.formState,
-  };
-}
+/**
+ * Hook específico para campos do formulário de propostas
+ */
+export const useFormField = createUseFormField(useProposalFormContext);

@@ -5,12 +5,9 @@ import { getAllDispositives } from '@/src/shared/modules/actions/dispositive.act
 
 async function ProposalRequestInterface() {
   const patologies = await getAllPatologies();
-  console.log('🚀 ~ ProposalRequestInterface ~ patologies:', patologies);
   const dispositives = await getAllDispositives();
-  console.log('🚀 ~ ProposalRequestInterface ~ dispositives:', dispositives);
-
   return (
-    <main>
+    <main className="px-6 py-4 ">
       <Card>
         <CardContent className="">
           <ProposalFormComponent

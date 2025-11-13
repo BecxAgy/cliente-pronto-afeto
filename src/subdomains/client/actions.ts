@@ -1,7 +1,8 @@
 'use server';
+import { State } from '@/src/shared/modules/types/state.types';
 import { insertUserToCookies } from './helpers';
 import { loginSchema, signupSchema } from './schemas';
-import { Login, State, Client, SignUp } from './types';
+import { Login, Client, SignUp } from './types';
 import jwt from 'jsonwebtoken';
 
 export async function fetchClient(
