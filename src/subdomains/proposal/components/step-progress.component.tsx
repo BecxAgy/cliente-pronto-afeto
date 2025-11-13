@@ -127,9 +127,9 @@ function StepProgressComponent({
   const safeCompletedSteps = completedSteps ?? new Set<ProposalFormTypeEnum>();
 
   return (
-    <div className="bg-background rounded-3xl p-8 space-y-8 sticky top-6">
+    <div className="bg-background rounded-3xl py-2 px-8 space-y-8 sticky top-6">
       {/* Logo */}
-      <div className="flex justify-center">
+      <div className="flex">
         <Image
           src="/images/logo.png"
           alt="Logo"

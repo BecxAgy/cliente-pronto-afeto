@@ -15,6 +15,8 @@ import { ProposalFormProvider } from '../contexts/proposal-form.context';
 import HealthFormComponent from './health-form.component';
 import { DispositivesDtoGet } from '@/src/shared/modules/types/dispositives.types';
 import { PatologyDtoGet } from '@/src/shared/modules/types/patology.types';
+import AddressFormComponent from './address-form.component';
+import DutyFormComponent from './duty-form.component';
 
 interface ProposalFormComponentProps {
   readonly onSubmitSuccess?: (data: ProposalFormSchemaProps) => void;
@@ -87,10 +89,12 @@ function ProposalFormComponent({
                   dispositives={dispositives}
                 />
               )}
-              {currentStep === ProposalFormTypeEnum.Address &&
-                'Endereço onde o atendimento será realizado'}
-              {currentStep === ProposalFormTypeEnum.Duty &&
-                'Defina os horários e turnos de atendimento'}
+              {currentStep === ProposalFormTypeEnum.Address && (
+                <AddressFormComponent />
+              )}
+              {currentStep === ProposalFormTypeEnum.Duty && (
+                <DutyFormComponent />
+              )}
               {currentStep === ProposalFormTypeEnum.Caregivers &&
                 'Escolha os profissionais para o atendimento'}
             </section>

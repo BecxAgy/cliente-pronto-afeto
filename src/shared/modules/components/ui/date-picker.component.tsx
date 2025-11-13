@@ -123,6 +123,7 @@ export function DatePicker({
       </div>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
+          mode="single"
           captionLayout="dropdown"
           selected={value}
           onSelect={(date: Date | undefined) => {

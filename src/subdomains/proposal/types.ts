@@ -1,5 +1,20 @@
 import { ProposalFormTypeEnum } from './schemas';
 
+export enum TurnoEnum {
+  Diurno = 'diurno',
+  Noturno = 'noturno',
+}
+
+export enum DiaDaSemanaEnum {
+  Segunda = 'segunda',
+  Terca = 'terca',
+  Quarta = 'quarta',
+  Quinta = 'quinta',
+  Sexta = 'sexta',
+  Sabado = 'sabado',
+  Domingo = 'domingo',
+}
+
 export interface StepProgressComponentProps {
   readonly currentStep: ProposalFormTypeEnum;
   readonly completedSteps?: Set<ProposalFormTypeEnum>;

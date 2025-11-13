@@ -1,4 +1,5 @@
 import z from 'zod';
+import { DiaDaSemanaEnum, TurnoEnum } from './types';
 
 export enum ProposalFormTypeEnum {
   Client = 'client',
@@ -203,27 +204,34 @@ const clientFormSchema = z.object({
 
 export const dutyFormSchema = z.object({
   dataHoraInicioPlantao: z
-    .string({
+    .date({
       error: issue =>
         issue.input === undefined
           ? 'Data é obrigatória'
-          : 'Data deve ser um texto',
+          : 'Data deve ser uma data válida',
     })
-    .refine(
-      value => {
-        const date = new Date(value);
-        return !Number.isNaN(date.getTime()) && date >= new Date('1900-01-01');
-      },
-      { message: 'Data inválida ou menor que 1900' }
-    ),
+    .min(new Date('1900-01-01'), 'Data inválida ou menor que 1900'),
   alimentacaoFornecida: z.boolean(),
   diasDaSemana: z
-    .array(z.string(), {
-      message: 'Selecione ao menos um dia da semana',
-    })
+    .array(
+      z.enum([
+        DiaDaSemanaEnum.Segunda,
+        DiaDaSemanaEnum.Terca,
+        DiaDaSemanaEnum.Quarta,
+        DiaDaSemanaEnum.Quinta,
+        DiaDaSemanaEnum.Sexta,
+        DiaDaSemanaEnum.Sabado,
+        DiaDaSemanaEnum.Domingo,
+      ]),
+      {
+        message: 'Selecione ao menos um dia da semana',
+      }
+    )
     .min(1, 'Selecione ao menos um dia da semana'),
   turno: z
-    .array(z.string(), { message: 'Selecione ao menos um turno' })
+    .array(z.enum([TurnoEnum.Diurno, TurnoEnum.Noturno]), {
+      message: 'Selecione ao menos um turno',
+    })
     .min(1, 'Selecione ao menos um turno'),
 });
 export type DutyFormSchemaProps = z.infer<typeof dutyFormSchema>;
