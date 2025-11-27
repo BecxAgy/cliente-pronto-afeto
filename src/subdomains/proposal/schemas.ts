@@ -24,7 +24,17 @@ export const healthSchema = z.object({
     .array(z.number())
     .nonempty('Você deve selecionar pelo menos uma patologia'),
   dispositivos: z.array(z.number()).optional(),
-  cuidado: careSchema,
+  cuidado: z.union([
+    careSchema,
+    z.object({
+      id: z.number(),
+      nome: z.string().optional(),
+      nomeApresentacao: z.string().optional(),
+      cpf: z.string().optional(),
+      peso: z.string().optional(),
+      dataNascimento: z.date().optional(),
+    }),
+  ]),
 });
 export type HealthFormSchemaProps = z.infer<typeof healthSchema>;
 

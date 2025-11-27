@@ -1,6 +1,9 @@
 import { getToken } from '@/src/shared/modules/services/token.service';
 import { Address, Caregiver } from '@/src/shared/modules/types/caregiver.types';
 import { ExistingClientProposal, NewClientProposal } from './helpers';
+import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
+import { State } from '@/src/shared/modules/types/state.types';
+import { Associate, ProposalDTOGet, ProposalGetRequestParams } from './types';
 
 export async function getNearCaregiver(
   localAtendimento: Address,
@@ -170,5 +173,79 @@ export async function createExistingClientProposal(
       error: true,
       message: 'Erro ao processar requisição',
     };
+  }
+}
+
+export async function associateUserToClient(
+  _prvState: State<Associate>,
+  data: FormData
+): Promise<State<Associate>> {
+  const clientId = data.get('clientId') as string;
+  console.log('🚀 ~ associateUserToClient ~ clientId:', clientId);
+  const session = await getUserSession();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}api/v1/signup/add-cliente-to-user/${session.userId}/clientes/${clientId}`,
+    {
+      method: 'PATCH',
+    }
+  );
+
+  if (res.ok) {
+    return { errors: {}, message: null, error: false };
+  } else {
+    return {
+      errors: {
+        clientId: ['Erro ao associar usuário ao cliente'],
+      },
+      error: true,
+      message: 'Ocorreu um erro',
+    };
+  }
+}
+
+export async function getProposals({
+  page,
+  limit,
+  status,
+  nomeCuidado,
+  direction,
+}: ProposalGetRequestParams): Promise<{
+  error: boolean;
+  data?: ProposalDTOGet;
+  message?: string;
+}> {
+  const session = await getUserSession();
+
+  const url = new URL(
+    `${process.env.NEXT_PUBLIC_API_URL}api/propostas/v1/propostas-clientes/${session.client?.id}`
+  );
+  const params = new URLSearchParams();
+
+  if (page) params.append('page', page.toString());
+  if (limit) params.append('limit', limit.toString());
+  if (status) params.append('status', status);
+  if (nomeCuidado) params.append('nomeCuidado', nomeCuidado);
+  if (direction) params.append('direction', direction);
+
+  url.search = params.toString();
+  try {
+    const res = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error('Erro ao buscar propostas');
+    }
+
+    const data = await res.json();
+    return { error: false, data };
+  } catch (error) {
+    console.error('Error fetching proposals:', error);
+    return { error: true, message: 'Ocorreu um erro' };
   }
 }

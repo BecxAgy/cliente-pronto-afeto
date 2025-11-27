@@ -15,14 +15,20 @@ const CIVIL_STATES = [
   'Viúvo(a)',
 ] as const;
 
-function ClientFormStep() {
+interface ClientFormStepProps {
+  readonly hasExistingClient?: boolean;
+}
+
+function ClientFormStep({ hasExistingClient = false }: ClientFormStepProps) {
   return (
     <div className="space-y-8">
       {/* Header */}
       <section className="space-y-1">
         <h2 className="text-2xl font-semibold">Dados do Cliente</h2>
         <p className="text-muted-foreground">
-          Preencha seus dados pessoais para prosseguir com a proposta.
+          {hasExistingClient
+            ? 'Seus dados já estão cadastrados. Você pode prosseguir para a próxima etapa.'
+            : 'Preencha seus dados pessoais para prosseguir com a proposta.'}
         </p>
       </section>
 
@@ -35,6 +41,7 @@ function ClientFormStep() {
           label="Nome Completo"
           placeholder="João Silva"
           icon={User}
+          disabled={hasExistingClient}
         />
 
         <TextField
@@ -42,6 +49,7 @@ function ClientFormStep() {
           label="Como gostaria de ser chamado?"
           placeholder="João"
           icon={User}
+          disabled={hasExistingClient}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -49,12 +57,14 @@ function ClientFormStep() {
             name="client.nacionalidade"
             label="Nacionalidade"
             placeholder="Brasileiro"
+            disabled={hasExistingClient}
           />
 
           <SelectField
             name="client.estadoCivil"
             label="Estado Civil"
             placeholder="Selecione"
+            disabled={hasExistingClient}
           >
             {CIVIL_STATES.map(state => (
               <SelectItem key={state} value={state}>
@@ -75,6 +85,7 @@ function ClientFormStep() {
             label="CPF"
             placeholder="000.000.000-00"
             icon={FileText}
+            disabled={hasExistingClient}
           />
 
           <TextField
@@ -82,6 +93,7 @@ function ClientFormStep() {
             label="RG"
             placeholder="00.000.000-0"
             icon={FileText}
+            disabled={hasExistingClient}
           />
         </div>
 
@@ -91,6 +103,7 @@ function ClientFormStep() {
           type="tel"
           placeholder="(00) 00000-0000"
           icon={Phone}
+          disabled={hasExistingClient}
         />
       </section>
 
@@ -103,6 +116,7 @@ function ClientFormStep() {
           label="CEP"
           placeholder="00000-000"
           icon={MapPin}
+          disabled={hasExistingClient}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -110,12 +124,14 @@ function ClientFormStep() {
             name="client.endereco.estado"
             label="Estado"
             placeholder="Bahia"
+            disabled={hasExistingClient}
           />
 
           <TextField
             name="client.endereco.cidade"
             label="Cidade"
             placeholder="Salvador"
+            disabled={hasExistingClient}
           />
         </div>
 
@@ -123,6 +139,7 @@ function ClientFormStep() {
           name="client.endereco.bairro"
           label="Bairro"
           placeholder="Pituba"
+          disabled={hasExistingClient}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -132,6 +149,7 @@ function ClientFormStep() {
               label="Rua"
               placeholder="Rua das Flores"
               icon={Home}
+              disabled={hasExistingClient}
             />
           </div>
 
@@ -139,6 +157,7 @@ function ClientFormStep() {
             name="client.endereco.numero"
             label="Número"
             placeholder="123"
+            disabled={hasExistingClient}
           />
         </div>
 
@@ -146,6 +165,7 @@ function ClientFormStep() {
           name="client.endereco.complemento"
           label="Complemento (opcional)"
           placeholder="Apto 101, Bloco A"
+          disabled={hasExistingClient}
         />
       </section>
     </div>

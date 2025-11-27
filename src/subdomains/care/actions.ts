@@ -1,6 +1,7 @@
 'use server';
 import { getToken } from '@/src/shared/modules/services/token.service';
-import { Care } from './types';
+import { Care, CareDTOGet } from './types';
+import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
 
 export async function addCare(formData: Care, idCliente: number) {
   const token = await getToken();
@@ -23,4 +24,37 @@ export async function addCare(formData: Care, idCliente: number) {
   }
 
   return { error: false, message: 'Proposta criada com sucesso!' };
+}
+
+export async function getCuidadosByCliente(): Promise<{
+  error: boolean;
+  data?: CareDTOGet;
+  message?: string;
+}> {
+  const session = await getUserSession();
+
+  if (!session?.client)
+    return { error: true, message: 'Cliente não encontrado' };
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}api/clientes/v1/get_all_cuidados/${session?.client.id}`,
+      {
+        cache: 'no-cache',
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      }
+    );
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      return { error: true, message: resData.message };
+    }
+
+    return { error: false, data: resData as CareDTOGet };
+  } catch (error) {
+    return { error: true, message: 'Erro ao buscar cuidados' };
+  }
 }

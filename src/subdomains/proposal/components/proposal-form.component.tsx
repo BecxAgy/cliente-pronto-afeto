@@ -18,12 +18,16 @@ import { PatologyDtoGet } from '@/src/shared/modules/types/patology.types';
 import AddressFormComponent from './address-form.component';
 import DutyFormComponent from './duty-form.component';
 import CaregiverFormComponent from './caregiver-form.component';
+import { Client } from '../../client/types';
+import { CareDTOGet } from '../../care/types';
 
 interface ProposalFormComponentProps {
   readonly onSubmitSuccess?: (data: ProposalFormSchemaProps) => void;
   readonly onSubmitError?: (error: Error) => void;
   readonly patologies?: PatologyDtoGet;
   readonly dispositives?: DispositivesDtoGet;
+  readonly client?: Client;
+  readonly cares?: CareDTOGet;
 }
 
 function ProposalFormComponent({
@@ -31,8 +35,11 @@ function ProposalFormComponent({
   onSubmitError,
   patologies,
   dispositives,
+  client,
+  cares,
 }: ProposalFormComponentProps) {
-  const form = useProposalForm();
+  const form = useProposalForm({ client });
+  const hasExistingClient = !!client;
 
   const controller = useProposalFormController({
     form: form as unknown as UseProposalFormReturn,
@@ -82,12 +89,14 @@ function ProposalFormComponent({
 
             <section className="py-4">
               {currentStep === ProposalFormTypeEnum.Client && (
-                <ClientFormStep />
+                <ClientFormStep hasExistingClient={hasExistingClient} />
               )}
               {currentStep === ProposalFormTypeEnum.Health && (
                 <HealthFormComponent
                   patologies={patologies}
                   dispositives={dispositives}
+                  cares={cares}
+                  hasExistingClient={hasExistingClient}
                 />
               )}
               {currentStep === ProposalFormTypeEnum.Address && (

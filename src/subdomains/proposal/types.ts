@@ -1,3 +1,4 @@
+import { Caregiver } from '@/src/shared/modules/types/caregiver.types';
 import { ProposalFormTypeEnum } from './schemas';
 
 export enum TurnoEnum {
@@ -37,8 +38,53 @@ export interface StepItemProps {
 }
 
 export type Status =
-  | 'Negada'
   | 'Aprovada'
   | 'Observacao'
-  | 'Em_Observacao'
-  | 'Assinada';
+  | 'Negada'
+  | 'Assinada'
+  | 'Finalizada';
+
+export interface Associate {
+  clientId?: string;
+}
+
+export interface ProposalGetRequestParams {
+  page?: number;
+  limit?: number;
+  nomeCuidado?: string;
+  status?: Status;
+  search?: string;
+  direction?: 'asc' | 'desc';
+}
+
+export interface MinimalProposal {
+  id: number;
+  telefone: string;
+  nomeCliente: string;
+  nomeCuidado: string;
+
+  dataInicioPlantao: number[] | string;
+  clienteId: number;
+  cuidadoId: number;
+  statusProposta: Status;
+  cuidadores: Caregiver[];
+}
+
+export interface ProposalDTOGet {
+  content: MinimalProposal[];
+  pageable: {
+    sort: {
+      sorted: boolean;
+      unsorted: boolean;
+      empty: boolean;
+    };
+
+    pageNumber: number;
+    pageSize: number;
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  totalElements: number;
+  totalPages: number;
+}

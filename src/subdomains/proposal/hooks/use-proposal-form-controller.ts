@@ -16,6 +16,8 @@ import {
   createExistingClientProposal,
   createNewClientProposal,
 } from '../actions';
+import { toast } from 'sonner';
+import { number } from 'zod';
 
 interface UseProposalFormControllerOptions {
   form: UseFormReturn<ProposalFormSchemaProps>;
@@ -55,11 +57,8 @@ export function useProposalFormController({
     const isValid = await validation.validateCurrentStep();
 
     if (!isValid) {
-      console.log('❌ Validação falhou para a etapa:', formSteps.currentStep);
       return false;
     }
-
-    console.log('✅ Validação passou para a etapa:', formSteps.currentStep);
 
     // Marca o passo atual como completo após validação bem-sucedida
     formSteps.markCurrentStepAsCompleted();
@@ -106,17 +105,17 @@ export function useProposalFormController({
           if (hasExistingClient) {
             // Cliente existente - usa ID do cliente e cuidado
             // Por enquanto cuidadoId é 0, será implementado posteriormente
-            const cuidadoId = 0;
+
             const proposalData = buildExistingClientProposal(
               data,
-              userSession.client!.id,
-              cuidadoId
+              userSession.client!.id
             );
             response = await createExistingClientProposal(proposalData);
           } else {
             // Novo cliente - envia todos os dados
-            const proposalData = buildNewClientProposal(data);
+            const proposalData = await buildNewClientProposal(data);
             response = await createNewClientProposal(proposalData);
+            console.log('🚀 ~ useProposalFormController ~ response:', response);
           }
 
           if (response.error) {
@@ -125,16 +124,16 @@ export function useProposalFormController({
 
           return {
             ...data,
-            clienteId: response.clienteId,
+            clienteId: response,
           };
         },
         {
           onSuccess: result => {
             onSubmitSuccess?.(result);
+            if (typeof result.clienteId === 'number')
+              router.push(`/proposal/success?clientId=${result.clienteId}`);
 
-            // Redirecionar para página de sucesso com clientId
-            const clientId = result.clienteId || '';
-            router.push(`/proposal/success?clientId=${clientId}`);
+            router.push('/proposal/success');
           },
           onError: error => {
             onSubmitError?.(error);
@@ -162,7 +161,8 @@ export function useProposalFormController({
         // Nas outras etapas, apenas avança se a validação passar
         const canAdvance = await handleNextStep();
         if (!canAdvance) {
-          console.log('🚫 Não pode avançar - validação falhou');
+          toast.info('Preencha os dados corretamente para continuar.');
+          return;
         }
       }
     },

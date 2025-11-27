@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useActionState, useEffect, useRef } from 'react';
 import { CheckCircle2, Clock, FileText, Mail, Phone } from 'lucide-react';
 import { Button } from '@/src/shared/modules/components/ui/button';
 import {
@@ -11,12 +11,32 @@ import {
   CardTitle,
 } from '@/src/shared/modules/components/ui/card';
 import Link from 'next/link';
+import { associateUserToClient } from '../actions';
+import { State } from '@/src/shared/modules/types/state.types';
+import { Associate } from '../types';
 
 interface ProposalSuccessInterfaceProps {
   readonly clientId?: string;
 }
 
 function ProposalSuccessInterface({ clientId }: ProposalSuccessInterfaceProps) {
+  const initialState: State<Associate> = {
+    errors: {},
+    message: '',
+    error: false,
+  };
+  const [state, action] = useActionState(associateUserToClient, initialState);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const hasSubmittedRef = useRef(false);
+
+  // Submeter automaticamente quando houver clientId
+  useEffect(() => {
+    if (clientId && !hasSubmittedRef.current && submitButtonRef.current) {
+      hasSubmittedRef.current = true;
+      submitButtonRef.current.click();
+    }
+  }, [clientId]);
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-2xl w-full space-y-8">
@@ -97,25 +117,21 @@ function ProposalSuccessInterface({ clientId }: ProposalSuccessInterfaceProps) {
                 </div>
               </div>
             </div>
-
-            {/* Proposal ID if available */}
-            {clientId && (
-              <div className="text-center py-3 px-4 bg-primary/5 rounded-lg border border-primary/20">
-                <p className="text-sm text-muted-foreground">
-                  Código da Proposta
-                </p>
-                <p className="text-lg font-mono font-semibold text-primary">
-                  #{clientId}
-                </p>
-              </div>
-            )}
           </CardContent>
         </Card>
+
+        {/* Form oculto para associação automática */}
+        <form action={action} className="hidden">
+          <input type="hidden" name="clientId" value={clientId} />
+          <button ref={submitButtonRef} type="submit" hidden>
+            Associar Cliente
+          </button>
+        </form>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-200">
           <Button asChild className="flex-1" size="lg">
-            <Link href="/">Voltar para Home</Link>
+            <Link href="/">Voltar à Página Inicial</Link>
           </Button>
           <Button asChild variant="outline" className="flex-1" size="lg">
             <Link href="/proposal/all">Ver Minhas Propostas</Link>

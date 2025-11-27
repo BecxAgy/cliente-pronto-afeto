@@ -14,10 +14,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useActionState, useEffect } from 'react';
 import { login } from '../actions';
-import { Login, State } from '../types';
+import { Login } from '../types';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/src/shared/modules/components/ui/error-message';
+import { State } from '@/src/shared/modules/types/state.types';
 
 export const LoginFormComponent = ({
   className,

@@ -1,3 +1,4 @@
+import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
 import { ProposalFormSchemaProps } from './schemas';
 
 /**
@@ -83,6 +84,7 @@ export interface NewClientProposal {
   cuidador: number[];
   renovarContrato: boolean;
   observacao?: string;
+  userId?: number;
 }
 
 /**
@@ -90,21 +92,21 @@ export interface NewClientProposal {
  */
 export function buildExistingClientProposal(
   formData: ProposalFormSchemaProps,
-  clientId: number,
-  cuidadoId: number
+  clientId: number
 ): ExistingClientProposal {
   if (
     !formData.address ||
     !formData.health ||
     !formData.duty ||
-    !formData.caregivers
+    !formData.caregivers ||
+    !formData.health.cuidado.id
   ) {
     throw new Error('Dados incompletos do formulário');
   }
 
   return {
     cliente: clientId,
-    cuidado: cuidadoId,
+    cuidado: formData.health.cuidado.id,
     localAtendimento: {
       cep: formData.address.cep,
       estado: formData.address.estado,
@@ -133,22 +135,26 @@ export function buildExistingClientProposal(
 /**
  * Extrai dados do formulário para novo cliente
  */
-export function buildNewClientProposal(
+export async function buildNewClientProposal(
   formData: ProposalFormSchemaProps
-): NewClientProposal {
+): Promise<NewClientProposal> {
   if (
     !formData.client ||
     !formData.address ||
     !formData.health ||
     !formData.duty ||
-    !formData.caregivers
+    !formData.caregivers ||
+    !formData.health.cuidado
   ) {
     throw new Error('Dados incompletos do formulário');
   }
 
   // Normaliza a data de nascimento
-  const dataNascimento = new Date(formData.health.cuidado.dataNascimento);
+  const dataNascimento = formData.health.cuidado.dataNascimento
+    ? new Date(formData.health.cuidado.dataNascimento)
+    : new Date();
   const normalizedDate = new Date(dataNascimento.toISOString().split('T')[0]);
+  const session = await getUserSession();
 
   return {
     cliente: {
@@ -164,11 +170,13 @@ export function buildNewClientProposal(
         complemento: formData.client.endereco.complemento || '',
       },
       cuidado: {
-        nome: formData.health.cuidado.nome,
+        nome: formData.health.cuidado.nome || '',
         nomeApresentacao: formData.health.cuidado.nomeApresentacao || '',
         dataNascimento: normalizedDate,
-        cpf: formData.health.cuidado.cpf,
-        peso: Number.parseFloat(formData.health.cuidado.peso.toString()),
+        cpf: formData.health.cuidado.cpf || '',
+        peso: formData.health?.cuidado?.peso
+          ? Number.parseFloat(formData.health.cuidado.peso.toString())
+          : 0,
       },
     },
     localAtendimento: {
@@ -193,5 +201,21 @@ export function buildNewClientProposal(
     },
     cuidador: formData.caregivers.caregivers,
     renovarContrato: false,
+    userId: Number(session.userId),
   };
 }
+
+export const convertStatusToPercent = (status: string): number => {
+  switch (status) {
+    case 'Negada':
+      return 0;
+    case 'Observacao':
+      return 30;
+    case 'Aprovada':
+      return 90;
+    case 'Assinada':
+      return 100;
+    default:
+      return 0;
+  }
+};
