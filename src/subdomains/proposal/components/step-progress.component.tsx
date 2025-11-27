@@ -52,8 +52,8 @@ function StepItem({
   const isClickable = onStepClick && (isCompleted || isCurrent);
 
   const getCircleStyles = () => {
-    if (isCompleted) return 'bg-primary border-primary text-primary-foreground';
-    if (isCurrent) return 'bg-primary/10 border-primary text-primary';
+    if (isCompleted) return 'bg-success border-success text-success-foreground';
+    if (isCurrent) return 'bg-info/10 border-info text-primary';
     return 'bg-background border-border text-muted-foreground';
   };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
 function ProposalAllInterface() {
-  return <div>ProposalAllInterface</div>;
+  return <div className=""></div>;
 }
 
 export default ProposalAllInterface;

@@ -164,7 +164,7 @@ export const dutyFormSchema = z.object({
           : 'Data deve ser uma data válida',
     })
     .min(new Date('1900-01-01'), 'Data inválida ou menor que 1900'),
-  alimentacaoFornecida: z.boolean(),
+  alimentacaoFornecida: z.boolean().optional(),
   diasDaSemana: z
     .array(
       z.enum([
@@ -192,32 +192,31 @@ export type DutyFormSchemaProps = z.infer<typeof dutyFormSchema>;
 export const caregiverSchema = z.object({
   caregivers: z
     .array(z.number())
-    .nonempty('Você deve selecionar pelo menos uma cuidador'),
+    .nonempty('Você deve selecionar pelo menos um cuidador'),
+  filters: z
+    .object({
+      habilidadesSelecionadas: z.array(z.number()).optional(),
+      avaliacoes: z.number().optional(),
+      name: z.string().optional(),
+      expercience: z.string().optional(),
+    })
+    .optional(),
 });
 export type CaregiverFormSchemaProps = z.infer<typeof caregiverSchema>;
 
-export const proposalFormSchema = z.discriminatedUnion('formType', [
-  z.object({
-    formType: z.literal(ProposalFormTypeEnum.Client),
-    client: clientFormSchema,
-  }),
-  z.object({
-    formType: z.literal(ProposalFormTypeEnum.Health),
-    health: healthSchema,
-  }),
-  z.object({
-    formType: z.literal(ProposalFormTypeEnum.Address),
-    address: locationFormSchema,
-  }),
-  z.object({
-    formType: z.literal(ProposalFormTypeEnum.Duty),
-    duty: dutyFormSchema,
-  }),
-
-  z.object({
-    formType: z.literal(ProposalFormTypeEnum.Caregivers),
-    caregivers: caregiverSchema,
-  }),
-]);
+export const proposalFormSchema = z.object({
+  formType: z.enum([
+    ProposalFormTypeEnum.Client,
+    ProposalFormTypeEnum.Health,
+    ProposalFormTypeEnum.Address,
+    ProposalFormTypeEnum.Duty,
+    ProposalFormTypeEnum.Caregivers,
+  ]),
+  client: clientFormSchema.optional(),
+  health: healthSchema.optional(),
+  address: locationFormSchema.optional(),
+  duty: dutyFormSchema.optional(),
+  caregivers: caregiverSchema.optional(),
+});
 
 export type ProposalFormSchemaProps = z.infer<typeof proposalFormSchema>;

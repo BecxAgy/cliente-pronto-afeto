@@ -15,3 +15,5 @@ export { useFormValidation } from './use-form-validation';
 export { useFormSubmission } from './use-form-submission';
 
 export { useProposalFormController } from './use-proposal-form-controller';
+
+export { useCaregiverSearch } from './use-caregiver-search';

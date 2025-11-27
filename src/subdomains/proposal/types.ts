@@ -1,18 +1,18 @@
 import { ProposalFormTypeEnum } from './schemas';
 
 export enum TurnoEnum {
-  Diurno = 'diurno',
-  Noturno = 'noturno',
+  Diurno = 'Diurno',
+  Noturno = 'Noturno',
 }
 
 export enum DiaDaSemanaEnum {
-  Segunda = 'segunda',
-  Terca = 'terca',
-  Quarta = 'quarta',
-  Quinta = 'quinta',
-  Sexta = 'sexta',
-  Sabado = 'sabado',
-  Domingo = 'domingo',
+  Segunda = 'SEGUNDA_FEIRA',
+  Terca = 'TERCA_FEIRA',
+  Quarta = 'QUARTA_FEIRA',
+  Quinta = 'QUINTA_FEIRA',
+  Sexta = 'SEXTA_FEIRA',
+  Sabado = 'SABADO',
+  Domingo = 'DOMINGO',
 }
 
 export interface StepProgressComponentProps {
@@ -35,3 +35,10 @@ export interface StepItemProps {
   readonly isLastStep: boolean;
   readonly onStepClick?: (step: ProposalFormTypeEnum) => void;
 }
+
+export type Status =
+  | 'Negada'
+  | 'Aprovada'
+  | 'Observacao'
+  | 'Em_Observacao'
+  | 'Assinada';

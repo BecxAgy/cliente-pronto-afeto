@@ -9,7 +9,6 @@ export const getUserSession = async (): Promise<UserSession> => {
   if (!token) throw new Error('No token found');
 
   const decodedToken = jwt.decode(token);
-  console.log('🚀 ~ getUserSession ~ decodedToken:', decodedToken);
 
   const client = await fetchClient(
     (decodedToken as jwt.JwtPayload)?.user_id,
@@ -23,5 +22,6 @@ export const getUserSession = async (): Promise<UserSession> => {
     refreshToken: token,
     expiresAt: (decodedToken as jwt.JwtPayload)?.exp as number,
     issuedAt: (decodedToken as jwt.JwtPayload)?.iat as number,
+    client: client || undefined,
   };
 };

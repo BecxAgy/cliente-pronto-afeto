@@ -95,6 +95,18 @@ export function useFormSteps(options: UseFormStepsOptions = {}) {
   }, [currentStep]);
 
   /**
+   * Desmarca a etapa atual como completa
+   * Útil ao voltar uma etapa para permitir re-validação
+   */
+  const unmarkCurrentStepAsCompleted = useCallback(() => {
+    setCompletedSteps(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(currentStep);
+      return newSet;
+    });
+  }, [currentStep]);
+
+  /**
    * Verifica se uma etapa foi completada (validada)
    */
   const isStepCompleted = useCallback(
@@ -142,6 +154,7 @@ export function useFormSteps(options: UseFormStepsOptions = {}) {
     isStepVisited,
     isStepCompleted,
     markCurrentStepAsCompleted,
+    unmarkCurrentStepAsCompleted,
     steps: FORM_STEPS,
   };
 }

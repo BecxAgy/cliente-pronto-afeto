@@ -6,6 +6,16 @@ import { useFormSteps } from './use-form-steps';
 import { useFormValidation } from './use-form-validation';
 import { useFormSubmission } from './use-form-submission';
 import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
+import {
+  buildExistingClientProposal,
+  buildNewClientProposal,
+} from '../helpers';
+import {
+  createExistingClientProposal,
+  createNewClientProposal,
+} from '../actions';
 
 interface UseProposalFormControllerOptions {
   form: UseFormReturn<ProposalFormSchemaProps>;
@@ -23,6 +33,7 @@ export function useProposalFormController({
   onSubmitError,
 }: UseProposalFormControllerOptions) {
   const { setValue, handleSubmit: rhfHandleSubmit } = form;
+  const router = useRouter();
 
   // Gerenciamento de etapas
   const formSteps = useFormSteps({
@@ -40,12 +51,15 @@ export function useProposalFormController({
   /**
    * Avança para a próxima etapa com validação
    */
-  const handleNextStep = useCallback(async () => {
+  const handleNextStep = useCallback(async (): Promise<boolean> => {
     const isValid = await validation.validateCurrentStep();
 
     if (!isValid) {
+      console.log('❌ Validação falhou para a etapa:', formSteps.currentStep);
       return false;
     }
+
+    console.log('✅ Validação passou para a etapa:', formSteps.currentStep);
 
     // Marca o passo atual como completo após validação bem-sucedida
     formSteps.markCurrentStepAsCompleted();
@@ -65,7 +79,13 @@ export function useProposalFormController({
   const handlePreviousStep = useCallback(
     (event?: React.MouseEvent<HTMLButtonElement>) => {
       event?.preventDefault();
+
+      // Remove a marcação de completo da etapa atual ao voltar
+      // Isso permite que o usuário possa editar e re-validação
+      formSteps.unmarkCurrentStepAsCompleted();
+
       formSteps.goToPreviousStep();
+      console.log('⬅️ Voltou para etapa:', formSteps.currentStep);
     },
     [formSteps]
   );
@@ -77,13 +97,44 @@ export function useProposalFormController({
     async (data: ProposalFormSchemaProps) => {
       await submission.submitWithLoading(
         async () => {
-          // Aqui você implementará a lógica de submissão real
-          // Por enquanto, retorna os dados
-          return data;
+          // Obter sessão do usuário
+          const userSession = await getUserSession();
+          const hasExistingClient = !!userSession.client;
+
+          let response;
+
+          if (hasExistingClient) {
+            // Cliente existente - usa ID do cliente e cuidado
+            // Por enquanto cuidadoId é 0, será implementado posteriormente
+            const cuidadoId = 0;
+            const proposalData = buildExistingClientProposal(
+              data,
+              userSession.client!.id,
+              cuidadoId
+            );
+            response = await createExistingClientProposal(proposalData);
+          } else {
+            // Novo cliente - envia todos os dados
+            const proposalData = buildNewClientProposal(data);
+            response = await createNewClientProposal(proposalData);
+          }
+
+          if (response.error) {
+            throw new Error(response.message || 'Erro ao criar proposta');
+          }
+
+          return {
+            ...data,
+            clienteId: response.clienteId,
+          };
         },
         {
           onSuccess: result => {
             onSubmitSuccess?.(result);
+
+            // Redirecionar para página de sucesso com clientId
+            const clientId = result.clienteId || '';
+            router.push(`/proposal/success?clientId=${clientId}`);
           },
           onError: error => {
             onSubmitError?.(error);
@@ -91,20 +142,32 @@ export function useProposalFormController({
         }
       );
     },
-    [submission, onSubmitSuccess, onSubmitError]
+    [submission, onSubmitSuccess, onSubmitError, router]
   );
 
   /**
    * Handler combinado para o onSubmit do form
    * Decide se avança para próxima etapa ou submete o formulário
    */
-  const onSubmit = rhfHandleSubmit(async data => {
-    if (formSteps.isLastStep) {
-      await handleFormSubmit(data);
-    } else {
-      await handleNextStep();
-    }
-  });
+  const onSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      if (formSteps.isLastStep) {
+        // Na última etapa, usa o handleSubmit do react-hook-form
+        await rhfHandleSubmit(async data => {
+          await handleFormSubmit(data);
+        })(event);
+      } else {
+        // Nas outras etapas, apenas avança se a validação passar
+        const canAdvance = await handleNextStep();
+        if (!canAdvance) {
+          console.log('🚫 Não pode avançar - validação falhou');
+        }
+      }
+    },
+    [formSteps.isLastStep, rhfHandleSubmit, handleFormSubmit, handleNextStep]
+  );
 
   /**
    * Obtém o label do botão baseado na etapa atual
@@ -114,7 +177,7 @@ export function useProposalFormController({
       return 'Processando...';
     }
 
-    return formSteps.isLastStep ? 'Finalizar Proposta' : 'Próximo';
+    return formSteps.isLastStep ? 'Finalizar ' : 'Próximo';
   }, [formSteps.isLastStep, submission.isSubmitting]);
 
   /**

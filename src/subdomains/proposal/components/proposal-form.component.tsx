@@ -17,6 +17,7 @@ import { DispositivesDtoGet } from '@/src/shared/modules/types/dispositives.type
 import { PatologyDtoGet } from '@/src/shared/modules/types/patology.types';
 import AddressFormComponent from './address-form.component';
 import DutyFormComponent from './duty-form.component';
+import CaregiverFormComponent from './caregiver-form.component';
 
 interface ProposalFormComponentProps {
   readonly onSubmitSuccess?: (data: ProposalFormSchemaProps) => void;
@@ -43,7 +44,7 @@ function ProposalFormComponent({
     onSubmit,
     handlePreviousStep,
     isFirstStep,
-    currentStep,
+    currentStep = ProposalFormTypeEnum.Caregivers,
     isSubmitting,
     error,
     getSubmitButtonLabel,
@@ -95,8 +96,9 @@ function ProposalFormComponent({
               {currentStep === ProposalFormTypeEnum.Duty && (
                 <DutyFormComponent />
               )}
-              {currentStep === ProposalFormTypeEnum.Caregivers &&
-                'Escolha os profissionais para o atendimento'}
+              {currentStep === ProposalFormTypeEnum.Caregivers && (
+                <CaregiverFormComponent />
+              )}
             </section>
 
             <div className="flex justify-between gap-4">
