@@ -1,8 +1,11 @@
 import React from 'react';
-import ProposalAllInterface from '../interfaces/proposal-all.interface';
+import { ProposalAllInterface } from '../interfaces/proposal-all.interface';
 
-function ProposalAllContainer() {
-  return <ProposalAllInterface />;
-}
-
-export default ProposalAllContainer;
+export const ProposalAllContainer = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const params = await searchParams;
+  return <ProposalAllInterface searchParams={params} />;
+};
