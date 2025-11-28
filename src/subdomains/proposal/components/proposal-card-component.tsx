@@ -1,13 +1,27 @@
 import { Button } from '@/src/shared/modules/components/ui/button';
 import { Card, CardContent } from '@/src/shared/modules/components/ui/card';
-import { Badge, MoreHorizontal } from 'lucide-react';
-import React from 'react';
+import {
+  Badge,
+  Edit2,
+  MoreHorizontal,
+  Pencil,
+  Signature,
+  Trash2,
+} from 'lucide-react';
+
 import { MinimalProposal } from '../types';
 import Image from 'next/image';
 import { convertStatusToPercent } from '../helpers';
 import { formatDate } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { parseBackendDate } from '@/src/shared/modules/helpers/date.helper';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/src/shared/modules/components/ui/popover';
+import CancelProposalButton from './cancel-proposal-button';
+import Link from 'next/link';
 
 export const ProposalCardComponent = ({
   proposal,
@@ -15,20 +29,54 @@ export const ProposalCardComponent = ({
   proposal: MinimalProposal;
 }) => {
   return (
-    <Card
-      key={proposal.id}
-      className={`bg-primary/5 relative overflow-hidden border-0 py-4`}
-    >
+    <Card className={`bg-primary/5 relative overflow-hidden border-0 py-4`}>
       <CardContent className="px-6">
-        {/* Settings Icon */}
-        <Button
-          variant="ghost"
-          size="sm"
-          className="absolute top-4 right-4 h-auto p-1"
-        >
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
+        {proposal.statusProposta === 'Assinada' ? (
+          <Link
+            href={`/proposal/record/${proposal.id}`}
+            className="text-sm absolute top-4 right-6 font-semibold hover:text-primary/70 hover:cursor-pointer text-primary z-10"
+          >
+            Ver Prontuário
+          </Link>
+        ) : (
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="absolute top-4 right-4">
+                <Button variant="ghost" size="sm" className=" h-auto p-1">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent align="end">
+              {proposal.statusProposta === 'Observacao' && (
+                <div className="">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="justify-start w-full"
+                  >
+                    <Edit2 className="mr-2 h-4 w-4" /> Editar Proposta
+                  </Button>
 
+                  <CancelProposalButton proposalId={proposal.id} />
+                </div>
+              )}
+              {proposal.statusProposta == 'Aprovada' && (
+                <div className="">
+                  <Link href={`/proposal/sign/${proposal.id}`}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start w-full"
+                    >
+                      <Pencil className="mr-2 h-4 w-4" /> Assinar Proposta
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        )}
         {/* Date */}
         <div className="mb-4 text-sm opacity-90">
           {formatDate(
@@ -77,7 +125,7 @@ export const ProposalCardComponent = ({
           <div className="flex -space-x-2">
             {proposal.cuidadores.map((member, index) => (
               <div
-                key={member.cuidadorId}
+                key={`${member.cuidadorId}-${index}`}
                 className="h-12 w-12 overflow-hidden rounded-full border-2 border-white"
                 style={{ zIndex: proposal.cuidadores.length - index }}
               >

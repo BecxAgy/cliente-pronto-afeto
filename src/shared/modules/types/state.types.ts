@@ -4,4 +4,5 @@ export interface State<T> {
   };
   message?: string | null;
   error?: boolean;
+  data?: T;
 }

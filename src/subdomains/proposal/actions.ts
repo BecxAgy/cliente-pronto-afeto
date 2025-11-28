@@ -1,9 +1,22 @@
+'use server';
 import { getToken } from '@/src/shared/modules/services/token.service';
 import { Address, Caregiver } from '@/src/shared/modules/types/caregiver.types';
-import { ExistingClientProposal, NewClientProposal } from './helpers';
+import {
+  dataURLtoBlob,
+  ExistingClientProposal,
+  NewClientProposal,
+} from './helpers';
 import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
 import { State } from '@/src/shared/modules/types/state.types';
-import { Associate, ProposalDTOGet, ProposalGetRequestParams } from './types';
+import {
+  Associate,
+  ProposalDTOGet,
+  ProposalGetRequestParams,
+  CancelProposal,
+  ProposalSign,
+} from './types';
+import { refresh } from 'next/cache';
+import { signatureSchema } from './schemas';
 
 export async function getNearCaregiver(
   localAtendimento: Address,
@@ -236,6 +249,9 @@ export async function getProposals({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.accessToken}`,
       },
+      next: {
+        tags: ['proposals'],
+      },
     });
 
     if (!res.ok) {
@@ -247,5 +263,172 @@ export async function getProposals({
   } catch (error) {
     console.error('Error fetching proposals:', error);
     return { error: true, message: 'Ocorreu um erro' };
+  }
+}
+
+export async function cancelProposal(
+  previousState: State<CancelProposal>,
+  req: FormData
+): Promise<State<CancelProposal>> {
+  const token = await getToken();
+  const proposalId = req.get('proposalId')?.toString();
+
+  if (!proposalId) {
+    return {
+      errors: { proposalId: ['ID da proposta é obrigatório'] },
+      error: true,
+      message: 'ID da proposta é obrigatório',
+    };
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}api/propostas/v1/${proposalId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return { errors: {}, error: true, message: 'Erro ao cancelar proposta' };
+    }
+
+    refresh();
+
+    return {
+      errors: {},
+      error: false,
+      message: 'Proposta cancelada com sucesso',
+    };
+  } catch (error) {
+    console.error('Error cancelling proposal:', error);
+    return { errors: {}, error: true, message: 'Erro ao cancelar proposta' };
+  }
+}
+
+export async function sendSignature(
+  previousState: State<ProposalSign>,
+  formData: FormData
+): Promise<State<ProposalSign>> {
+  const user = await getUserSession();
+
+  if (!user) throw new Error('Usuário não encontrado');
+  const imageData = formData.get('image');
+
+  if (!imageData || typeof imageData !== 'string') {
+    return {
+      errors: { image: ['Invalid image data'] },
+      message:
+        'Há campos a serem preenchidos corretamente. Erro ao criar documento',
+      error: true,
+    };
+  }
+  const image = dataURLtoBlob(imageData);
+
+  const validatedFields = signatureSchema.safeParse({
+    image: image,
+  });
+
+  if (!validatedFields.success) {
+    const errors = validatedFields.error.flatten().fieldErrors;
+    return {
+      errors,
+      message:
+        'Há campos a serem preenchidos corretamente. Erro ao criar documento',
+      error: true,
+    };
+  }
+  const id = formData.get('id')?.toString();
+  formData.delete('id');
+  formData.delete('image');
+  formData.append('image', image, 'assinatura.png');
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}api/contratos/v1/${id}/pdf-assinado`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const data = await response.json();
+    return {
+      errors: {},
+      message: data.message.toString(),
+      error: true,
+    };
+  }
+
+  return {
+    errors: {},
+    message: 'Assinatura enviada com sucesso',
+    error: false,
+  };
+}
+
+export async function downloadContract(
+  previousState: State<{ pdfBase64?: string }>,
+  formData: FormData
+): Promise<State<{ pdfBase64?: string }>> {
+  const proposalId = formData.get('proposalId')?.toString();
+
+  if (!proposalId) {
+    return {
+      errors: {},
+      error: true,
+      message: 'ID da proposta é obrigatório',
+    };
+  }
+
+  const session = await getUserSession();
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}api/contratos/v1/${proposalId}/pdf`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return {
+        errors: {},
+        error: true,
+        message: errorData.message || 'Erro ao baixar contrato',
+      };
+    }
+
+    // Converte blob para buffer e depois para base64 no servidor
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = `data:application/pdf;base64,${buffer.toString('base64')}`;
+
+    return {
+      errors: {},
+      error: false,
+      message: 'Contrato baixado com sucesso',
+      data: {
+        pdfBase64: base64,
+      },
+    };
+  } catch (error) {
+    console.error('Error downloading contract:', error);
+    return {
+      errors: {},
+      error: true,
+      message: 'Erro ao processar download',
+    };
   }
 }

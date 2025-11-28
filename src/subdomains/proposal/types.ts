@@ -88,3 +88,12 @@ export interface ProposalDTOGet {
   totalElements: number;
   totalPages: number;
 }
+
+export interface CancelProposal {
+  proposalId: number;
+}
+
+export interface ProposalSign {
+  proposalId: number;
+  image: string;
+}

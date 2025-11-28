@@ -230,3 +230,9 @@ export const proposalFormSchema = z.object({
 });
 
 export type ProposalFormSchemaProps = z.infer<typeof proposalFormSchema>;
+
+export const signatureSchema = z.object({
+  image: z.instanceof(Blob).or(z.string()),
+});
+
+export type SignatureSchema = z.infer<typeof signatureSchema>;

@@ -219,3 +219,16 @@ export const convertStatusToPercent = (status: string): number => {
       return 0;
   }
 };
+
+export const dataURLtoBlob = (dataURL: string): Blob => {
+  const byteString = atob(dataURL.split(',')[1]);
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+  const buffer = new ArrayBuffer(byteString.length);
+  const intArray = new Uint8Array(buffer);
+
+  for (let i = 0; i < byteString.length; i++) {
+    intArray[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([buffer], { type: mimeString });
+};
