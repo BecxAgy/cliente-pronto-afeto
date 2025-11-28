@@ -22,3 +22,7 @@ export interface CareDTOGet {
     unpaged: boolean;
   };
 }
+
+export interface DeleteCare {
+  careId: number;
+}

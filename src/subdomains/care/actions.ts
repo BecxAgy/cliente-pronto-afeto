@@ -1,7 +1,9 @@
 'use server';
 import { getToken } from '@/src/shared/modules/services/token.service';
-import { Care, CareDTOGet } from './types';
+import { Care, CareDTOGet, DeleteCare } from './types';
 import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
+import { refresh, revalidateTag } from 'next/cache';
+import { State } from '@/src/shared/modules/types/state.types';
 
 export async function addCare(formData: Omit<Care, 'id'>, idCliente: number) {
   const token = await getToken();
@@ -26,7 +28,7 @@ export async function addCare(formData: Omit<Care, 'id'>, idCliente: number) {
   return { error: false, message: 'Cuidado criada com sucesso!' };
 }
 
-export async function getCuidadosByCliente(): Promise<{
+export async function getCaresByClient(): Promise<{
   error: boolean;
   data?: CareDTOGet;
   message?: string;
@@ -44,6 +46,7 @@ export async function getCuidadosByCliente(): Promise<{
         headers: {
           Authorization: `Bearer ${session.accessToken}`,
         },
+        next: { tags: ['cuidados'] },
       }
     );
 
@@ -112,6 +115,39 @@ export async function updateCare(id: number, formData: Omit<Care, 'id'>) {
     const resData = await response.json();
     return { error: true, message: resData.message };
   }
-
+  revalidateTag('cuidados', 'max');
   return { error: false, message: 'Cuidado atualizado com sucesso!' };
+}
+
+export async function deleteCare(
+  previousState: State<DeleteCare>,
+  formData: FormData
+): Promise<State<DeleteCare>> {
+  const careId = formData.get('careId');
+  const token = await getToken();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}api/cuidados/v1/${careId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const resData = await response.json();
+    return {
+      ...previousState,
+      error: true,
+      message: resData.message || 'Erro ao excluir cuidado.',
+    };
+  }
+
+  refresh();
+  return {
+    ...previousState,
+    error: false,
+    message: 'Cuidado excluído com sucesso.',
+  };
 }

@@ -12,19 +12,17 @@ import {
   PaginationPrevious,
 } from '@/src/shared/modules/components/ui/pagination';
 
-interface ProposalPaginationProps {
+interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  totalElements: number;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export function ProposalPaginationComponent({
+export function PaginationComponent({
   currentPage,
   totalPages,
-  totalElements,
   searchParams,
-}: ProposalPaginationProps) {
+}: PaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
 

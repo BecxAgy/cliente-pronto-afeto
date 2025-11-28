@@ -3,7 +3,7 @@ import ProposalFormComponent from '../components/proposal-form.component';
 import { Card, CardContent } from '@/src/shared/modules/components/ui/card';
 import { getAllDispositives } from '@/src/shared/modules/actions/dispositive.actions';
 import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
-import { getCuidadosByCliente } from '@/src/subdomains/care/actions';
+import { getCaresByClient } from '@/src/subdomains/care/actions';
 
 async function ProposalRequestInterface() {
   const patologies = await getAllPatologies();
@@ -12,7 +12,7 @@ async function ProposalRequestInterface() {
 
   let cares = null;
   if (session?.client) {
-    const caresResult = await getCuidadosByCliente();
+    const caresResult = await getCaresByClient();
     if (!caresResult.error) {
       cares = caresResult.data;
     }

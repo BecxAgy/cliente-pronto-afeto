@@ -5,7 +5,7 @@ import { MinimalProposal, Status } from '../types';
 import Image from 'next/image';
 import { ProposalCardComponent } from '../components/proposal-card-component';
 import FilterHeaderComponent from '../components/filter-header.component';
-import { ProposalPaginationComponent } from '../components/proposal-pagination.component';
+import { PaginationComponent } from '@/src/shared/modules/components/ui/pagination.component';
 
 interface ProposalAllInterfaceProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -57,10 +57,9 @@ export const ProposalAllInterface = async ({
             ))}
           </div>
 
-          <ProposalPaginationComponent
+          <PaginationComponent
             currentPage={page}
             totalPages={proposals.data?.totalPages || 0}
-            totalElements={proposals.data?.totalElements || 0}
             searchParams={searchParams}
           />
         </>

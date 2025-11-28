@@ -8,6 +8,7 @@ import { useCareForm } from '../hooks/use-care-form';
 import { Care } from '../types';
 import { useRouter } from 'next/navigation';
 import { parseBackendDate } from '@/src/shared/modules/helpers/date.helper';
+import { Loader2 } from 'lucide-react';
 
 export const CareEditContainer = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -44,7 +45,7 @@ export const CareEditContainer = ({ params }: { params: { id: string } }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p>Carregando...</p>
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
