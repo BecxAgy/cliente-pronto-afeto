@@ -20,7 +20,7 @@ export function useCareForm(options?: UseCareFormOptions) {
       nomeApresentacao: '',
       cpf: '',
       peso: '',
-      dataNascimento: new Date(),
+      dataNascimento: undefined,
     },
     mode: 'onChange',
   });

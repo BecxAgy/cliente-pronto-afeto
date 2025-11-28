@@ -67,7 +67,7 @@ const FilterHeaderComponent = ({
 
   return (
     <div className="py-6">
-      <div className="flex w-full gap-6 ">
+      <div className="flex w-full gap-4 ">
         <form onSubmit={handleSearch} className="relative w-full">
           <Search className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -81,13 +81,15 @@ const FilterHeaderComponent = ({
         <Button asChild>
           <Link href="/proposal/request">
             <Plus className="w-4 h-4 " />
-            Criar Proposta
+            <p className="hidden md:block"> Criar Proposta</p>
           </Link>
         </Button>
 
         <Button variant={'outline'} onClick={toggleDirection}>
           <ArrowUpDown className="w-4 h-4 " />
-          {currentDirection === 'asc' ? 'Mais antigos' : 'Mais recentes'}
+          <p className="hidden md:block">
+            {currentDirection === 'asc' ? 'Mais antigos' : 'Mais recentes'}
+          </p>
         </Button>
       </div>
 

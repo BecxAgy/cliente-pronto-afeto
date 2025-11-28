@@ -51,7 +51,7 @@ export const ProposalAllInterface = async ({
 
       {hasProposals ? (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mb-6">
             {proposals.data?.content.map((proposal: MinimalProposal) => (
               <ProposalCardComponent key={proposal.id} proposal={proposal} />
             ))}
