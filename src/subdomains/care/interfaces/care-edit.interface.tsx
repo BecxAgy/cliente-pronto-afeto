@@ -13,13 +13,16 @@ import CareForm from '../components/care-form';
 import { useCareFormContext } from '../contexts/care-form.context';
 import { useFormSubmission } from '@/src/shared/modules/hooks/use-form-submission';
 import { Form } from '@/src/shared/modules/components/ui/form';
-import { addCare } from '../actions';
+import { updateCare } from '../actions';
 import { toast } from 'sonner';
 import { Care } from '../types';
-import { getClientId } from '../helpers';
 import { useRouter } from 'next/navigation';
 
-function CareAddInterface() {
+interface CareEditInterfaceProps {
+  careId: string;
+}
+
+const CareEditInterface = ({ careId }: CareEditInterfaceProps) => {
   const { form } = useCareFormContext();
   const { isSubmitting, submitWithLoading } = useFormSubmission();
   const router = useRouter();
@@ -27,7 +30,7 @@ function CareAddInterface() {
   const onSubmit = form.handleSubmit(async data => {
     await submitWithLoading(
       async () => {
-        const careData: Omit<Care, 'id'> = {
+        const careUpdateData: Omit<Care, 'id'> = {
           nome: data.nome,
           nomeApresentacao: data.nomeApresentacao,
           cpf: data.cpf,
@@ -35,9 +38,7 @@ function CareAddInterface() {
           dataNascimento: data.dataNascimento.toISOString(),
         };
 
-        const idCliente = await getClientId();
-
-        const result = await addCare(careData, idCliente);
+        const result = await updateCare(Number(careId), careUpdateData);
 
         if (result.error) {
           throw new Error(result.message);
@@ -47,12 +48,11 @@ function CareAddInterface() {
       },
       {
         onSuccess: result => {
-          toast.success(result.message || 'Cuidado adicionado com sucesso!');
+          toast.success(result.message || 'Cuidado atualizado com sucesso!');
           router.push('/care/all');
-          form.reset();
         },
         onError: error => {
-          toast.error(error.message || 'Erro ao adicionar cuidado');
+          toast.error(error.message || 'Erro ao atualizar cuidado');
         },
       }
     );
@@ -66,10 +66,10 @@ function CareAddInterface() {
       <Card className="w-full max-w-3xl mx-auto mt-10 p-6 relative z-10">
         <CardHeader>
           <CardTitle className="text-2xl">
-            Adicione novos <span className="text-primary">cuidados!</span>
+            Editar <span className="text-primary">cuidado</span>
           </CardTitle>
           <CardDescription>
-            Preencha as informações abaixo para adicionar um novo cuidado.
+            Atualize as informações do cuidado abaixo.
           </CardDescription>
         </CardHeader>
 
@@ -82,13 +82,13 @@ function CareAddInterface() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => form.reset()}
+                  onClick={() => router.push('/care/all')}
                   disabled={isSubmitting}
                 >
-                  Limpar
+                  Cancelar
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Salvando...' : 'Salvar Cuidado'}
+                  {isSubmitting ? 'Salvando...' : 'Salvar Alterações'}
                 </Button>
               </div>
             </form>
@@ -97,6 +97,6 @@ function CareAddInterface() {
       </Card>
     </main>
   );
-}
+};
 
-export default CareAddInterface;
+export default CareEditInterface;
