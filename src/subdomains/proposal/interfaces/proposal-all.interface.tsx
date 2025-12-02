@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { ProposalCardComponent } from '../components/proposal-card-component';
 import FilterHeaderComponent from '../components/filter-header.component';
 import { PaginationComponent } from '@/src/shared/modules/components/ui/pagination.component';
+import { getAllDispositives } from '@/src/shared/modules/actions/dispositive.actions';
+import { getAllPatologies } from '@/src/shared/modules/actions/patology.actions';
 
 interface ProposalAllInterfaceProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -14,7 +16,9 @@ interface ProposalAllInterfaceProps {
 export const ProposalAllInterface = async ({
   searchParams,
 }: ProposalAllInterfaceProps) => {
-  // Extrair e validar parâmetros de busca
+  const patologies = await getAllPatologies();
+  const dispositives = await getAllDispositives();
+
   const page = searchParams.page ? Number(searchParams.page) : 0;
   const limit = searchParams.limit ? Number(searchParams.limit) : 6;
   const search =
@@ -53,7 +57,12 @@ export const ProposalAllInterface = async ({
         <>
           <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mb-6">
             {proposals.data?.content.map((proposal: MinimalProposal) => (
-              <ProposalCardComponent key={proposal.id} proposal={proposal} />
+              <ProposalCardComponent
+                key={proposal.id}
+                proposal={proposal}
+                patology={patologies.data}
+                dispositives={dispositives.data}
+              />
             ))}
           </div>
 

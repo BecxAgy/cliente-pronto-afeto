@@ -9,6 +9,7 @@ import {
   Users2,
   UserSquare2,
 } from 'lucide-react';
+import { logout } from '../../actions/auth.actions';
 import {
   Sidebar,
   SidebarContent,
@@ -83,6 +84,14 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -93,7 +102,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenuItem key={'logout'}>
-          <SidebarMenuButton className="hover:text-destructive">
+          <SidebarMenuButton
+            className="hover:text-destructive"
+            onClick={handleLogout}
+          >
             <LogOut />
             <span>Sair</span>
           </SidebarMenuButton>
