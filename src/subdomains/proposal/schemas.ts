@@ -236,3 +236,22 @@ export const signatureSchema = z.object({
 });
 
 export type SignatureSchema = z.infer<typeof signatureSchema>;
+
+export const editProposalSchema = z.object({
+  renovarContratoAtuomaticamente: z.boolean().optional(),
+  health: z.object({
+    comentarios: z.string().optional(),
+    patologias: z.array(z.number()).optional(),
+    dispositivos: z.array(z.number()).optional(),
+  }),
+  duty: z.object({
+    turno: z.array(z.string()).optional(),
+    diasDaSemana: z.array(z.string()).optional(),
+    alimentacaoFornecida: z.boolean(),
+    dataHoraInicioPlantao: z.string(),
+
+    observacoes: z.string().optional(),
+  }),
+});
+
+export type EditProposalSchema = z.infer<typeof editProposalSchema>;

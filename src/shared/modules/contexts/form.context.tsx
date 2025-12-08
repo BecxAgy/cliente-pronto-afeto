@@ -1,7 +1,11 @@
 'use client';
 
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import { type UseFormReturn, type FieldValues } from 'react-hook-form';
+import {
+  type UseFormReturn,
+  type FieldValues,
+  FormProvider as RHFFormProvider,
+} from 'react-hook-form';
 
 interface FormContextValue<TFormData extends FieldValues> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +28,9 @@ export function createFormContext<TFormData extends FieldValues>() {
     const value = useMemo(() => ({ form }), [form]);
 
     return (
-      <FormContext.Provider value={value}>{children}</FormContext.Provider>
+      <RHFFormProvider {...form}>
+        <FormContext.Provider value={value}>{children}</FormContext.Provider>
+      </RHFFormProvider>
     );
   }
 

@@ -1,5 +1,9 @@
-import { Caregiver } from '@/src/shared/modules/types/caregiver.types';
+import { Address, Caregiver } from '@/src/shared/modules/types/caregiver.types';
 import { ProposalFormTypeEnum } from './schemas';
+import { Client } from '../client/types';
+import { Care } from '../care/types';
+import { Health } from '@/src/shared/modules/types/health.types';
+import { Duty } from '@/src/shared/modules/types/duty.types';
 
 export enum TurnoEnum {
   Diurno = 'Diurno',
@@ -57,6 +61,12 @@ export interface ProposalGetRequestParams {
   direction?: 'asc' | 'desc';
 }
 
+export interface ProposalResponse {
+  error: boolean;
+  clienteId?: number;
+  message?: string;
+}
+
 export interface MinimalProposal {
   id: number;
   telefone: string;
@@ -96,4 +106,21 @@ export interface CancelProposal {
 export interface ProposalSign {
   proposalId: number;
   image: string;
+}
+
+export interface Proposal {
+  id: number;
+  statusProposta: Status;
+
+  dataDeInicio: number[];
+  dataHoraInicioPlantao: number[];
+  cliente: Client;
+
+  plantao: Duty;
+  cuidado: Care;
+  cuidadores: Caregiver[];
+  saude: Health;
+  localAtendimento: Address;
+  observacao?: string;
+  renovarContratoAtuomaticamente: boolean;
 }

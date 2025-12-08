@@ -1,13 +1,6 @@
 import { Button } from '@/src/shared/modules/components/ui/button';
 import { Card, CardContent } from '@/src/shared/modules/components/ui/card';
-import {
-  Badge,
-  Edit2,
-  MoreHorizontal,
-  Pencil,
-  Signature,
-  Trash2,
-} from 'lucide-react';
+import { MoreHorizontal, Pencil } from 'lucide-react';
 
 import { MinimalProposal } from '../types';
 import Image from 'next/image';
@@ -22,11 +15,18 @@ import {
 } from '@/src/shared/modules/components/ui/popover';
 import CancelProposalButton from './cancel-proposal-button';
 import Link from 'next/link';
+import { ProposalEditFormSheet } from './proposal-edit-form';
+import { PatologyDtoGet } from '@/src/shared/modules/types/patology.types';
+import { DispositivesDtoGet } from '@/src/shared/modules/types/dispositives.types';
 
 export const ProposalCardComponent = ({
   proposal,
+  patology,
+  dispositives,
 }: {
   proposal: MinimalProposal;
+  patology?: PatologyDtoGet;
+  dispositives?: DispositivesDtoGet;
 }) => {
   return (
     <Card className={`bg-primary/5 relative overflow-hidden border-0 py-4`}>
@@ -50,13 +50,11 @@ export const ProposalCardComponent = ({
             <PopoverContent align="end">
               {proposal.statusProposta === 'Observacao' && (
                 <div className="">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start w-full"
-                  >
-                    <Edit2 className="mr-2 h-4 w-4" /> Editar Proposta
-                  </Button>
+                  <ProposalEditFormSheet
+                    patology={patology}
+                    dispositives={dispositives}
+                    proposalId={proposal.id}
+                  />
 
                   <CancelProposalButton proposalId={proposal.id} />
                 </div>

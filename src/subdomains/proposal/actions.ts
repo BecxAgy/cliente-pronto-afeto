@@ -14,9 +14,10 @@ import {
   ProposalGetRequestParams,
   CancelProposal,
   ProposalSign,
+  ProposalResponse,
 } from './types';
 import { refresh } from 'next/cache';
-import { signatureSchema } from './schemas';
+import { EditProposalSchema, signatureSchema } from './schemas';
 
 export async function getNearCaregiver(
   localAtendimento: Address,
@@ -94,11 +95,41 @@ export async function getNearCaregiver(
   }
 }
 
-interface ProposalResponse {
+export const getProposalById = async (
+  proposalId: string
+): Promise<{
   error: boolean;
-  clienteId?: number;
+  data?: ProposalDTOGet;
   message?: string;
-}
+}> => {
+  const session = await getUserSession();
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}api/propostas/v1/${proposalId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        next: {
+          tags: ['proposals'],
+        },
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error('Erro ao buscar proposta');
+    }
+
+    const data = await res.json();
+    return { error: false, data };
+  } catch (error) {
+    console.error('Error fetching proposal by ID:', error);
+    return { error: true, message: 'Ocorreu um erro' };
+  }
+};
 
 /**
  * Submete proposta para novo cliente (primeira proposta)
@@ -106,9 +137,7 @@ interface ProposalResponse {
 export async function createNewClientProposal(
   data: NewClientProposal
 ): Promise<ProposalResponse> {
-  console.log('🚀 ~ createNewClientProposal ~ data:', data);
   const token = await getToken();
-  console.log('🚀 ~ createNewClientProposal ~ token:', token);
 
   try {
     const response = await fetch(
@@ -125,7 +154,7 @@ export async function createNewClientProposal(
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.log('🚀 ~ createNewClientProposal ~ errorData:', errorData);
+
       return {
         error: true,
         message: errorData.message || 'Erro ao criar proposta',
@@ -133,10 +162,10 @@ export async function createNewClientProposal(
     }
 
     const responseData = await response.json();
-    console.log('🚀 ~ createNewClientProposal ~ responseData:', responseData);
+
     return {
       error: false,
-      clienteId: responseData.clienteId,
+      clienteId: responseData,
     };
   } catch (error) {
     console.error('Error creating new client proposal:', error);
@@ -432,3 +461,32 @@ export async function downloadContract(
     };
   }
 }
+
+export const editProposta = async (data: EditProposalSchema, id: string) => {
+  const session = await getUserSession();
+  try {
+    // Requisição para a API
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + 'api/propostas/v1/' + id,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (response.ok) {
+      return { error: false };
+    } else {
+      const errorData = await response.json();
+
+      return { error: true, message: errorData.message };
+    }
+  } catch (e) {
+    console.error('Error editing proposal:', e);
+    return { error: true, message: 'Failed to parse response JSON' };
+  }
+};
