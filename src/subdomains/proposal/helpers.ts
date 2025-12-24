@@ -232,3 +232,59 @@ export const dataURLtoBlob = (dataURL: string): Blob => {
 
   return new Blob([buffer], { type: mimeString });
 };
+
+/**
+ * Interface para dados de edição de proposta (formato da API)
+ */
+export interface EditProposalAPIRequest {
+  renovarContratoAtuomaticamente?: boolean;
+  anamnese: {
+    comentarios?: string;
+    patologias?: number[];
+    dispositivos?: number[];
+  };
+  plantao: {
+    turno?: string[];
+    diasDaSemana?: string[];
+    alimentacaoFornecida: boolean;
+    dataHoraInicioPlantao: string;
+    observacoes?: string;
+  };
+}
+
+/**
+ * Transforma os dados do formulário de edição no formato aceito pela API
+ */
+export function buildEditProposalRequest(
+  formData: {
+    renovarContratoAtuomaticamente?: boolean;
+    health: {
+      comentarios?: string;
+      patologias?: number[];
+      dispositivos?: number[];
+    };
+    duty: {
+      turno?: string[];
+      diasDaSemana?: string[];
+      alimentacaoFornecida: boolean;
+      dataHoraInicioPlantao: string;
+      observacoes?: string;
+    };
+  }
+): EditProposalAPIRequest {
+  return {
+    renovarContratoAtuomaticamente: formData.renovarContratoAtuomaticamente,
+    anamnese: {
+      comentarios: formData.health.comentarios,
+      patologias: formData.health.patologias,
+      dispositivos: formData.health.dispositivos,
+    },
+    plantao: {
+      turno: formData.duty.turno,
+      diasDaSemana: formData.duty.diasDaSemana,
+      alimentacaoFornecida: formData.duty.alimentacaoFornecida,
+      dataHoraInicioPlantao: formData.duty.dataHoraInicioPlantao,
+      observacoes: formData.duty.observacoes,
+    },
+  };
+}

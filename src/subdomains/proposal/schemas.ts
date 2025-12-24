@@ -248,10 +248,13 @@ export const editProposalSchema = z.object({
     turno: z.array(z.string()).optional(),
     diasDaSemana: z.array(z.string()).optional(),
     alimentacaoFornecida: z.boolean(),
-    dataHoraInicioPlantao: z.string(),
+    dataHoraInicioPlantao: z.union([z.string(), z.date()]).transform((val) => 
+      val instanceof Date ? val.toISOString() : val
+    ),
 
     observacoes: z.string().optional(),
   }),
 });
 
-export type EditProposalSchema = z.infer<typeof editProposalSchema>;
+export type EditProposalSchemaInput = z.input<typeof editProposalSchema>;
+export type EditProposalSchema = z.output<typeof editProposalSchema>;

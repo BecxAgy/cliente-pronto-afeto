@@ -20,7 +20,7 @@ async function NavbarComponent() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Type here"
+              
               className="w-full pl-10 bg-muted/50"
             />
           </div>
@@ -28,21 +28,12 @@ async function NavbarComponent() {
 
         {/* Right Side Icons */}
         <div className="flex items-center gap-2">
-          {/* Calendar */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Calendar className="h-5 w-5" />
-            <span className="sr-only">Calendar</span>
-          </Button>
+       
 
           {/* Theme Toggler */}
           <ThemeToggler />
 
-          {/* Messages */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Mail className="h-5 w-5" />
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-600" />
-            <span className="sr-only">Messages</span>
-          </Button>
+       
 
           {/* User Menu */}
           <Link href="/profile">

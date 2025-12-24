@@ -5,6 +5,7 @@ import {
   dataURLtoBlob,
   ExistingClientProposal,
   NewClientProposal,
+  buildEditProposalRequest,
 } from './helpers';
 import { getUserSession } from '@/src/shared/modules/helpers/session.helper';
 import { State } from '@/src/shared/modules/types/state.types';
@@ -15,6 +16,7 @@ import {
   CancelProposal,
   ProposalSign,
   ProposalResponse,
+  Proposal,
 } from './types';
 import { refresh } from 'next/cache';
 import { EditProposalSchema, signatureSchema } from './schemas';
@@ -99,7 +101,7 @@ export const getProposalById = async (
   proposalId: string
 ): Promise<{
   error: boolean;
-  data?: ProposalDTOGet;
+  data?: Proposal;
   message?: string;
 }> => {
   const session = await getUserSession();
@@ -114,7 +116,7 @@ export const getProposalById = async (
           Authorization: `Bearer ${session.accessToken}`,
         },
         next: {
-          tags: ['proposals'],
+          tags: ['proposal'],
         },
       }
     );
@@ -464,6 +466,10 @@ export async function downloadContract(
 
 export const editProposta = async (data: EditProposalSchema, id: string) => {
   const session = await getUserSession();
+  
+  // Transforma os dados do formulário no formato aceito pela API
+  const apiData = buildEditProposalRequest(data);
+  
   try {
     // Requisição para a API
     const response = await fetch(
@@ -474,7 +480,7 @@ export const editProposta = async (data: EditProposalSchema, id: string) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.accessToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(apiData),
       }
     );
 

@@ -19,3 +19,31 @@ export function useIsMobile() {
 
   return !!isMobile;
 }
+
+export type ScreenSize = 'mobile' | 'tablet' | 'desktop' | 'wide';
+
+export function useScreenSize() {
+  const [screenSize, setScreenSize] = React.useState<ScreenSize | undefined>(
+    undefined
+  );
+
+  React.useEffect(() => {
+    const getScreenSize = (): ScreenSize => {
+      const width = window.innerWidth;
+      if (width < 768) return 'mobile';
+      if (width < 1024) return 'tablet';
+      if (width < 1536) return 'desktop';
+      return 'wide';
+    };
+
+    const onChange = () => {
+      setScreenSize(getScreenSize());
+    };
+
+    onChange();
+    window.addEventListener('resize', onChange);
+    return () => window.removeEventListener('resize', onChange);
+  }, []);
+
+  return screenSize;
+}

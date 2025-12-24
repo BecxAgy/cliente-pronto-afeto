@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { ProposalEditFormSheet } from './proposal-edit-form';
 import { PatologyDtoGet } from '@/src/shared/modules/types/patology.types';
 import { DispositivesDtoGet } from '@/src/shared/modules/types/dispositives.types';
+import { AvatarList } from '@/src/shared/modules/components/ui/avatar-list';
 
 export const ProposalCardComponent = ({
   proposal,
@@ -33,7 +34,7 @@ export const ProposalCardComponent = ({
       <CardContent className="px-6">
         {proposal.statusProposta === 'Assinada' ? (
           <Link
-            href={`/proposal/record/${proposal.id}`}
+            href={`/proposal/${proposal.id}/record`}
             className="text-sm absolute top-4 right-6 font-semibold hover:text-primary/70 hover:cursor-pointer text-primary z-10"
           >
             Ver Prontuário
@@ -117,27 +118,7 @@ export const ProposalCardComponent = ({
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="flex items-center justify-between">
-          {/* Team Avatars */}
-          <div className="flex -space-x-2">
-            {proposal.cuidadores.map((member, index) => (
-              <div
-                key={`${member.cuidadorId}-${index}`}
-                className="h-12 w-12 overflow-hidden rounded-full border-2 border-white"
-                style={{ zIndex: proposal.cuidadores.length - index }}
-              >
-                <Image
-                  src={'/images/profile.png'}
-                  alt={`Team member ${member.cuidadorId}`}
-                  width={32}
-                  height={32}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+      <AvatarList avatars={proposal.cuidadores} />
       </CardContent>
     </Card>
   );

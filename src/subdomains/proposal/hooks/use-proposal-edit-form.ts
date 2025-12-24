@@ -2,7 +2,7 @@
 
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { EditProposalSchema } from '../schemas';
+import type { EditProposalSchemaInput } from '../schemas';
 import { editProposalSchema } from '../schemas';
 import { Proposal } from '../types';
 
@@ -15,7 +15,7 @@ interface UseProposalEditFormOptions {
  * Centraliza a lógica do react-hook-form
  */
 export function useProposalEditForm({ proposal }: UseProposalEditFormOptions) {
-  const form = useForm<EditProposalSchema>({
+  const form = useForm<EditProposalSchemaInput>({
     resolver: zodResolver(editProposalSchema),
     defaultValues: {
       renovarContratoAtuomaticamente: false,
@@ -28,13 +28,13 @@ export function useProposalEditForm({ proposal }: UseProposalEditFormOptions) {
         turno: proposal?.plantao?.turno || [],
         diasDaSemana: proposal?.plantao?.diasDaSemana || [],
         alimentacaoFornecida: proposal?.plantao?.alimentacaoFornecida || false,
-        dataHoraInicioPlantao: proposal?.dataHoraInicioPlantao
+        dataHoraInicioPlantao: (proposal?.dataHoraInicioPlantao
           ? new Date(
               proposal.dataHoraInicioPlantao[0],
               proposal.dataHoraInicioPlantao[1] - 1,
               proposal.dataHoraInicioPlantao[2]
-            ).toISOString()
-          : new Date().toISOString(),
+            )
+          : new Date()).toISOString(),
         observacoes: proposal?.observacao || '',
       },
     },
@@ -44,4 +44,4 @@ export function useProposalEditForm({ proposal }: UseProposalEditFormOptions) {
   return form;
 }
 
-export type UseProposalEditFormReturn = UseFormReturn<EditProposalSchema>;
+export type UseProposalEditFormReturn = UseFormReturn<EditProposalSchemaInput>;
