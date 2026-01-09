@@ -7,7 +7,6 @@
 export function convertBackendDateArrayToDate(
   dateArray: number[] | string
 ): Date | null {
-  console.log("🚀 ~ convertBackendDateArrayToDate ~ dateArray:", dateArray)
   // Se já for string, tenta converter diretamente
   if (typeof dateArray === 'string') {
     const date = new Date(dateArray);
@@ -49,7 +48,7 @@ export function parseBackendDate(
  * @param locale - Locale para formatação (padrão: 'en-US')
  * @returns Nome do dia da semana abreviado
  */
-export function formatDayName(date: Date, locale = 'en-US'): string {
+export function formatDayName(date: Date, locale = 'pt-BR'): string {
   return date.toLocaleDateString(locale, { weekday: 'short' });
 }
 
@@ -83,12 +82,18 @@ export function isSameDay(date1: Date, date2: Date): boolean {
  * @param locale - Locale para formatação (padrão: 'en-US')
  * @returns String formatada (ex: "Apr 22 - 28, 2024")
  */
-export function formatDateRange(startDate: Date, endDate?: Date, locale = 'en-US'): string {
-  const end = endDate || (() => {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + 6);
-    return date;
-  })();
+export function formatDateRange(
+  startDate: Date,
+  endDate?: Date,
+  locale = 'pt-BR'
+): string {
+  const end =
+    endDate ||
+    (() => {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + 6);
+      return date;
+    })();
 
   const startMonth = startDate.toLocaleDateString(locale, { month: 'short' });
   const endMonth = end.toLocaleDateString(locale, { month: 'short' });

@@ -225,7 +225,6 @@ export async function associateUserToClient(
   data: FormData
 ): Promise<State<Associate>> {
   const clientId = data.get('clientId') as string;
-  console.log('🚀 ~ associateUserToClient ~ clientId:', clientId);
   const session = await getUserSession();
 
   const res = await fetch(
@@ -466,10 +465,10 @@ export async function downloadContract(
 
 export const editProposta = async (data: EditProposalSchema, id: string) => {
   const session = await getUserSession();
-  
+
   // Transforma os dados do formulário no formato aceito pela API
   const apiData = buildEditProposalRequest(data);
-  
+
   try {
     // Requisição para a API
     const response = await fetch(

@@ -84,7 +84,6 @@ export function useProposalFormController({
       formSteps.unmarkCurrentStepAsCompleted();
 
       formSteps.goToPreviousStep();
-      console.log('⬅️ Voltou para etapa:', formSteps.currentStep);
     },
     [formSteps]
   );
@@ -115,7 +114,6 @@ export function useProposalFormController({
             // Novo cliente - envia todos os dados
             const proposalData = await buildNewClientProposal(data);
             response = await createNewClientProposal(proposalData);
-            console.log('🚀 ~ useProposalFormController ~ response:', response);
           }
 
           if (response.error) {

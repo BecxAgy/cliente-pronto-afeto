@@ -36,7 +36,7 @@ function ButtonFilterComponent({ onFilterChange }: ButtonFilterComponentProps) {
       const loadSkills = async () => {
         setIsLoadingSkills(true);
         const response = await getAllSkills();
-        console.log('🚀 ~ loadSkills ~ response:', response);
+
         if (!response.error && response.data) {
           setSkills(response.data.content);
         }
