@@ -20,15 +20,11 @@ export const SleepActivityDetails = ({
         <p className="text-lg font-bold text-foreground mb-2">
           Registro de Sono
         </p>
-        <span className={getStatusChipClasses(statusVariant)}>
+        <div className={getStatusChipClasses(statusVariant)}>
           <div className="w-1.5 h-1.5 rounded-full bg-current" />
           {tipoSonoLabel}
-        </span>
+        </div>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Avaliado às {formatActivityTimestamp(activity.dataHora)}
-      </p>
     </div>
   );
 };

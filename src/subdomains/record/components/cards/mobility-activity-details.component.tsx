@@ -1,5 +1,5 @@
 import React from 'react';
-import { MobilityActivity, MobilityTypeEnum } from '../../types';
+import { MobilityActivity } from '../../types';
 import {
   getMobilityStatusVariant,
   getStatusChipClasses,
@@ -11,8 +11,7 @@ export const MobilityActivityDetails = ({
 }: {
   activity: MobilityActivity;
 }) => {
-  const tipoMobilidade = MobilityTypeEnum[activity.tipoMobilidade];
-  const statusVariant = getMobilityStatusVariant(tipoMobilidade);
+  const statusVariant = getMobilityStatusVariant(activity.tipoMobilidade);
 
   return (
     <div className="space-y-3">
@@ -21,7 +20,7 @@ export const MobilityActivityDetails = ({
           <p className="text-lg font-bold text-foreground mb-2">Mobilidade</p>
           <span className={getStatusChipClasses(statusVariant)}>
             <div className="w-1.5 h-1.5 rounded-full bg-current" />
-            {tipoMobilidade}
+            {activity.tipoMobilidade}
           </span>
         </div>
       </div>
@@ -29,12 +28,8 @@ export const MobilityActivityDetails = ({
       <p className="text-sm text-muted-foreground">
         O cuidador avaliou que a mobilidade do paciente está{' '}
         <span className="font-semibold text-foreground capitalize">
-          {tipoMobilidade.toLowerCase()}
+          {activity.tipoMobilidade.toLowerCase()}
         </span>
-      </p>
-
-      <p className="text-xs text-muted-foreground">
-        {formatActivityTimestamp(activity.dataHora)}
       </p>
     </div>
   );

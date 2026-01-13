@@ -75,11 +75,6 @@ export const DiuresisActivityDetails = ({
           ))}
         </div>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Registrado às{' '}
-        {format(new Date(activity.dataHora), "HH'h' mm'min'", { locale: ptBR })}
-      </p>
     </div>
   );
 };

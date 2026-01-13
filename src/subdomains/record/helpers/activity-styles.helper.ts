@@ -13,7 +13,7 @@ import { cn } from '@/src/shared/modules/lib/utils';
  * @returns Objeto com ícone, label e classes CSS
  */
 export function getActivityStyles(type: ActivityEnum): ActivityStyle {
-  return ACTIVITY_STYLES[type] ?? ACTIVITY_STYLES[ActivityEnum.ESTADO_GERAL];
+  return ACTIVITY_STYLES[type] ?? ACTIVITY_STYLES[ActivityEnum.ALIMENTACAO];
 }
 
 /**
@@ -78,7 +78,7 @@ export function getSleepStatusVariant(tipo: string): StatusVariant {
 
 export function getMobilityStatusVariant(tipo: string): StatusVariant {
   switch (tipo) {
-    case 'AUTONOMO':
+    case 'AUTÔNOMO':
       return 'success';
     case 'RESTRITO':
       return 'warning';

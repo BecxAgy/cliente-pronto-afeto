@@ -29,10 +29,6 @@ export const DefecationActivityDetails = ({
           </span>
         </div>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Registrado às {formatActivityTimestamp(activity.dataHora)}
-      </p>
     </div>
   );
 };

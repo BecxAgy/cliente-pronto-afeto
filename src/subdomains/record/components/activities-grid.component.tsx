@@ -1,10 +1,8 @@
-import { mockRecordResponse } from '../record.mock';
 import {
   ActivityUnion,
   ActivityEnum,
   DiuresisActivity,
   FeedingActivity,
-  GeneralStateActivity,
   DefecationActivity,
   MobilityActivity,
   DrugAdministrationActivity,
@@ -18,7 +16,6 @@ import { DefecationActivityDetails } from './cards/defecation-activity-details.c
 import { DiuresisActivityDetails } from './cards/diuresis-activity-details.component';
 import { DrugActivityDetails } from './cards/drug-activity-details.component';
 import { FeedingActivityDetails } from './cards/feeding-activity-details.component';
-import { GeneralActivityDetails } from './cards/general-activity-details.component';
 import { MobilityActivityDetails } from './cards/mobility-activity-details.component';
 import VitalSignsActivityDetails from './cards/vital-signs-activity-details.component';
 import { SleepActivityDetails } from './cards/sleep-activity-details.component';
@@ -29,8 +26,7 @@ export const ActivitiesGrid = ({
 }: {
   activities: ActivityUnion[];
 }) => {
-  // Para uso futuro quando activities vier de props
-  const displayActivities = mockRecordResponse.atividades;
+  const displayActivities = activities;
 
   const renderActivityContent = (activity: ActivityUnion) => {
     switch (activity.tipo) {
@@ -58,10 +54,7 @@ export const ActivitiesGrid = ({
             activity={activity as VitalSignsActivity}
           />
         );
-      case ActivityEnum.ESTADO_GERAL:
-        return (
-          <GeneralActivityDetails activity={activity as GeneralStateActivity} />
-        );
+
       case ActivityEnum.SONO:
         return <SleepActivityDetails activity={activity as SleepActivity} />;
       case ActivityEnum.HIDRATACAO_PELE:
@@ -81,13 +74,21 @@ export const ActivitiesGrid = ({
     }
   };
 
+  const formatDataHora = (dataHora: string | number[]): string => {
+    if (Array.isArray(dataHora)) {
+      const [year, month, day, hour = 0, minute = 0] = dataHora;
+      return new Date(year, month - 1, day, hour, minute).toISOString();
+    }
+    return dataHora;
+  };
+
   return (
     <div className="space-y-4">
       {displayActivities.map((activity, index) => (
         <ActivityCardComponent
           key={`activity-${activity.tipo}-${index}`}
           type={activity.tipo}
-          timestamp={formatActivityTimestamp(activity.dataHora)}
+          timestamp={formatActivityTimestamp(formatDataHora(activity.dataHora))}
         >
           {renderActivityContent(activity)}
         </ActivityCardComponent>

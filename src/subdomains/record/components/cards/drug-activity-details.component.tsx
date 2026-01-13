@@ -72,10 +72,6 @@ export const DrugActivityDetails = ({ activity }: DrugActivityDetailsProps) => {
           </div>
         </div>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Administrado às {formatActivityTimestamp(dataHora)}
-      </p>
     </div>
   );
 };

@@ -21,7 +21,7 @@ export const HydrationActivityDetails = ({
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Nível</span>
             <span className="font-bold text-foreground">
-              {activity.hidratacaoPelo}/10
+              {activity.hidratacaoPelo}/100
             </span>
           </div>
 
@@ -33,10 +33,6 @@ export const HydrationActivityDetails = ({
           </div>
         </div>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Avaliado às {formatActivityTimestamp(activity.dataHora)}
-      </p>
     </div>
   );
 };

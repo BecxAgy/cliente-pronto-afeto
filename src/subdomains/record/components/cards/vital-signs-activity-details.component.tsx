@@ -57,12 +57,6 @@ const VitalSignsActivityDetails = ({
           </p>
         </div>
       </div>
-
-      <div className="pt-2 border-t border-border/30">
-        <p className="text-xs text-muted-foreground">
-          Registrado às {formatActivityTimestamp(activity.dataHora)}
-        </p>
-      </div>
     </div>
   );
 };

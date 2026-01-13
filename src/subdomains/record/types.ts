@@ -4,16 +4,15 @@ export enum ActivityEnum {
   DEJECOES,
   DIURESES,
   SINAIS_VITAIS,
-  ESTADO_GERAL,
   SONO,
   HIDRATACAO_PELE,
   MEDICAMENTOS,
 }
 
 export enum SleepTypeEnum {
-  BOM,
-  RUIM,
-  INTERRUPTIVO,
+  BOM = 'BOM',
+  RUIM = 'RUIM',
+  INTERRUPTIVO = 'INTERRUPTIVO',
 }
 
 export interface VitalSign {
@@ -21,25 +20,25 @@ export interface VitalSign {
   frequenciaCardiaca: number;
   frequenciaRespiratoria: number;
   pressaoArterial: string;
-  dataHoraRegistro: string;
+  dataHoraRegistro: string | number[]; // Aceita string ou array Java LocalDateTime
 }
 
 export enum MobilityTypeEnum {
-  AUTONOMO,
-  RESTRITO,
-  IMÓVEL,
+  AUTONOMO = 'AUTÔNOMO',
+  RESTRITO = 'RESTRITO',
+  IMÓVEL = 'IMÓVEL',
 }
 
 export enum DiuresisTypeEnum {
-  NORMAL,
-  ELEVADA,
-  REDUZIDA,
+  NORMAL = 'NORMAL',
+  ELEVADA = 'ELEVADA',
+  REDUZIDA = 'REDUZIDA',
 }
 
 export enum DefecationTypeEnum {
-  NORMAL,
-  DIARRÉIA,
-  CONSTIPAÇÃO,
+  NORMAL = 'NORMAL',
+  DIARRÉIA = 'DIARRÉIA',
+  CONSTIPAÇÃO = 'CONSTIPAÇÃO',
 }
 export enum FeedingTypeEnum {
   CafeDaManha,
@@ -73,7 +72,7 @@ export interface Posology {
 
 export interface Activity {
   tipo: ActivityEnum;
-  dataHora: string;
+  dataHora: string | number[]; // Aceita string ISO ou array Java LocalDateTime [year, month, day, hour, minute]
   cuidadorId: number;
 }
 
@@ -97,12 +96,6 @@ export interface HydrationSkinActivity extends Activity {
   hidratacaoPelo: number;
 }
 
-export interface GeneralStateActivity extends Activity {
-  estadoGeral: {
-    estado: string;
-  };
-}
-
 export interface DiuresisActivity extends Activity {
   tipoDiurese: DiuresisTypeEnum;
 }
@@ -120,7 +113,6 @@ export type ActivityUnion =
   | FeedingActivity
   | DefecationActivity
   | DiuresisActivity
-  | GeneralStateActivity
   | HydrationSkinActivity
   | DrugAdministrationActivity
   | MobilityActivity
@@ -137,3 +129,5 @@ export interface RecordRequest {
   status?: ActivityEnum;
   data_hora: string;
 }
+
+export type ActivityInput = ActivityUnion;

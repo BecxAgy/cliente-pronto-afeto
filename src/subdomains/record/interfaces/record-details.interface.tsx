@@ -23,17 +23,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/src/shared/modules/components/ui/tooltip';
+import Link from 'next/link';
 
 interface RecordDetailsInterfaceProps {
   proposal: Proposal;
   record: RecordResponse;
   selectedDate: string;
+  id: string;
 }
 
 export const RecordDetailsInterface = ({
   proposal,
   record,
   selectedDate,
+  id,
 }: RecordDetailsInterfaceProps) => {
   const startDate = parseBackendDate(proposal.plantao.dataHoraInicioPlantao);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -55,6 +58,9 @@ export const RecordDetailsInterface = ({
               <DateWeekSelector />
 
               {/* Botão Sheet para Mobile/Tablet */}
+              <Link href={`/proposal/${id}/record/evaluate`}>
+                <Button>Avaliar Atendimento</Button>
+              </Link>
               <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                 <TooltipProvider>
                   <Tooltip>

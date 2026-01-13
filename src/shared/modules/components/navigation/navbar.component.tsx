@@ -1,6 +1,5 @@
-import { Search, Calendar, Mail, User } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { Input } from '../ui/input';
-import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ThemeToggler } from '../theme/theme-toggler';
 import { SidebarTrigger } from '../ui/sidebar';

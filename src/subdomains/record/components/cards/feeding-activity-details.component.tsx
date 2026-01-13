@@ -19,9 +19,17 @@ export const FeedingActivityDetails = ({
 }) => {
   const { refeicao, tipoAlimentacao, aceitou } = activity.estadoAlimentacao;
 
-  const iconPath = refeicaoImageMap[refeicao];
-  const refeicaoLabel = refeicaoLabelMap[refeicao];
-  const tipoLabel = tipoAlimentacaoLabelMap[tipoAlimentacao];
+  // Handle both enum numbers and string values from API
+  const iconPath =
+    refeicaoImageMap[refeicao as keyof typeof refeicaoImageMap] ||
+    '/icons/pasta.svg';
+  const refeicaoLabel =
+    refeicaoLabelMap[refeicao as keyof typeof refeicaoLabelMap] ||
+    String(refeicao);
+  const tipoLabel =
+    tipoAlimentacaoLabelMap[
+      tipoAlimentacao as keyof typeof tipoAlimentacaoLabelMap
+    ] || String(tipoAlimentacao);
 
   return (
     <div className="flex gap-4 items-start">
@@ -53,10 +61,6 @@ export const FeedingActivityDetails = ({
             </>
           )}
         </span>
-
-        <p className="text-xs text-muted-foreground">
-          Registrado às {formatActivityTimestamp(activity.dataHora)}
-        </p>
       </div>
     </div>
   );
